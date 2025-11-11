@@ -2,7 +2,7 @@
 
 # --- Safe module bootstrap & import for user_profile.ps1 ---
 
-$ErrorActionPreference = 'Stop'
+$ErrorActionPreference = 'Continue'
 
 function Ensure-NuGetProvider {
   if (-not (Get-PackageProvider -ListAvailable -Name NuGet -ErrorAction SilentlyContinue)) {
@@ -499,7 +499,7 @@ function Update-Dotfiles {
     [switch]$SkipWallpaper
   )
 
-  $ErrorActionPreference = 'Stop'
+  $ErrorActionPreference = 'Continue'
 
   $install = Join-Path $Repo 'install.ps1'
   if (-not (Test-Path $install)) {
@@ -625,6 +625,32 @@ if (Get-Command -Name "Get-Theme_Override" -ErrorAction SilentlyContinue) {
 else {
   oh-my-posh init pwsh --config https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/robbyrussell.omp.json | Invoke-Expression
 }
+
+function Edit-Profile {
+  # Ensure the profile file exists
+  if (-not (Test-Path $PROFILE)) {
+    New-Item -ItemType File -Path $PROFILE -Force | Out-Null
+  }
+
+  # Detect editor in order of preference: neovim → VS Code → notepad
+  if (Get-Command nvim -ErrorAction SilentlyContinue) {
+    $editor = "nvim"
+    # For neovim in a new console window (optional):
+    # Start-Process nvim -ArgumentList $PROFILE; return
+  }
+  elseif (Get-Command code -ErrorAction SilentlyContinue) {
+    $editor = "code"
+    # Open in existing window:
+    # $editorArgs = "-r"
+    # But default is fine for most setups
+  }
+  else {
+    $editor = "notepad.exe"
+  }
+
+  & $editor $PROFILE
+}
+
 
 # Aliases
 Set-Alias -Name vim -Value nvim
