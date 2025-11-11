@@ -1,0 +1,8 @@
+require("core.options")
+require("core.keymaps")
+require("core.autocmds")
+require("core.health-check")
+require("core.icons")
+require("core.lsp")
+require("core.mason-verify")
+require("core.lazy")
