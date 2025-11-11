@@ -1,0 +1,60 @@
+/* =========================================================
+   Wofi Theme: Gruvbox Material Dark Hard
+   Author: ChatGPT (GPT-5)
+   ========================================================= */
+
+window {
+  margin: 0px;
+  border: 2px solid #32302f;
+  background-color: #1d2021;
+  border-radius: 6px;
+}
+
+#input {
+  margin: 10px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  color: #d4be98;
+  background-color: #32302f;
+  font-family: "Hack Nerd Font Propo";
+  font-size: 12pt;
+}
+
+#inner-box {
+  margin: 10px;
+  background-color: #1d2021;
+}
+
+#outer-box {
+  margin: 5px;
+  background-color: #1d2021;
+}
+
+#scroll {
+  margin: 0px;
+  background-color: #1d2021;
+}
+
+#entry {
+  padding: 8px 10px;
+  margin: 2px 0px;
+  color: #d4be98;
+  background-color: transparent;
+  border-radius: 4px;
+  font-family: "Hack Nerd Font Propo";
+  font-size: 11pt;
+}
+
+#entry:selected {
+  background-color: #e78a4e;
+  color: #1d2021;
+}
+
+#text {
+  color: inherit;
+}
+
+#img {
+  padding-right: 6px;
+}
