@@ -1,0 +1,50 @@
+# Font Settings
+font-family = "Hack Nerd Font Propo"
+font-size = 16
+cell-width-scale = 1.0
+cell-height-scale = 1.0
+
+# Gruvbox Material Dark Hard Contrast
+background = #1d2021
+foreground = #d4be98
+cursor-color = #d4be98
+selection-background = #3c3836
+selection-foreground = #d4be98
+
+# Normal colors
+color0  = #1d2021  # black
+color1  = #ea6962  # red
+color2  = #a9b665  # green
+color3  = #d8a657  # yellow
+color4  = #7daea3  # blue
+color5  = #d3869b  # magenta
+color6  = #89b482  # cyan
+color7  = #d4be98  # white
+
+# Bright colors
+color8  = #32302f  # bright black
+color9  = #ea6962  # bright red
+color10 = #a9b665  # bright green
+color11 = #d8a657  # bright yellow
+color12 = #7daea3  # bright blue
+color13 = #d3869b  # bright magenta
+color14 = #89b482  # bright cyan
+color15 = #fbf1c7  # bright white
+
+# Optional: tab and border colors (Ghostty supports these)
+tab-active-bg = #3c3836
+tab-inactive-bg = #1d2021
+tab-active-fg = #d4be98
+tab-inactive-fg = #7c6f64
+border-color = #3c3836
+
+
+# Transparency (ensure your compositor supports this)
+opacity = 0.85
+
+# Terminal Behavior
+hide-cursor-when-typing = true
+scrollback-lines = 10000
+
+# Italics (dependent on theme and font support)
+enable-italic = true
