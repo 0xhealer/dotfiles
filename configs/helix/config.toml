@@ -1,0 +1,49 @@
+# =========================================================
+# Helix Config (Gruvbox Material Dark Hard)
+# =========================================================
+
+theme = "gruvbox_material_dark_hard"
+
+[editor]
+line-number = "relative"
+mouse = true
+scroll-lines = 3
+scrolloff = 5
+idle-timeout = 0
+auto-pairs = true
+cursorline = true
+gutters = ["diagnostics", "line-numbers", "spacer", "diff"]
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.statusline]
+left = ["mode", "spinner", "file-name"]
+center = ["diagnostics"]
+right = ["file-type", "position", "position-percentage"]
+separator = "│"
+
+[editor.lsp]
+display-inlay-hints = true
+display-messages = true
+
+[editor.file-picker]
+hidden = false
+git-ignore = true
+
+[editor.whitespace.render]
+space = "none"
+tab = "all"
+newline = "none"
+
+[editor.whitespace.characters]
+tab = "⇥"
+newline = "↵"
+
+[editor.indent-guides]
+render = true
+character = "│"
+skip-levels = 1
+
