@@ -1,0 +1,95 @@
+/* =========================================================
+   Waybar Theme: Gruvbox Material Dark Hard
+   Author: ChatGPT (GPT-5)
+   ========================================================= */
+
+* {
+  border: none;
+  border-radius: 0;
+  font-family: "Hack Nerd Font Propo", monospace;
+  font-size: 11pt;
+  min-height: 0;
+}
+
+/* Background and text */
+window#waybar {
+  background: #1d2021;
+  color: #d4be98;
+  transition-property: background-color;
+  transition-duration: 0.3s;
+}
+
+/* Module spacing */
+.modules-left,
+.modules-center,
+.modules-right {
+  margin: 0 6px;
+}
+
+/* Workspaces */
+#workspaces button {
+  padding: 0 8px;
+  background: transparent;
+  color: #d4be98;
+  border-bottom: 2px solid transparent;
+}
+
+#workspaces button.active {
+  background: #e78a4e;
+  color: #1d2021;
+  border-radius: 4px;
+}
+
+#workspaces button.urgent {
+  background: #ea6962;
+  color: #1d2021;
+}
+
+#workspaces button:hover {
+  background: #32302f;
+  color: #d4be98;
+}
+
+/* Center modules (clock) */
+#clock {
+  color: #7daea3;
+  padding: 0 12px;
+  font-weight: 500;
+}
+
+/* Right-side modules */
+#cpu,
+#memory,
+#pulseaudio,
+#network,
+#battery {
+  padding: 0 10px;
+  color: #d4be98;
+}
+
+/* Battery states */
+#battery.charging {
+  color: #a9b665;
+}
+
+#battery.critical {
+  color: #ea6962;
+}
+
+/* Network status */
+#network.disconnected {
+  color: #ea6962;
+}
+
+/* PulseAudio muted */
+#pulseaudio.muted {
+  color: #665c54;
+}
+
+/* Subtle separators */
+#cpu:not(:last-child),
+#memory:not(:last-child),
+#pulseaudio:not(:last-child),
+#network:not(:last-child) {
+  border-right: 1px solid #32302f;
+}
