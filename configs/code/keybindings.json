@@ -1,0 +1,53 @@
+// Place your key bindings in this file to override the defaults
+[
+  {
+    "key": "Ctrl+k Ctrl+e",
+    "command": "workbench.view.explorer"
+  },
+  {
+    "key": "Ctrl+k Ctrl+b",
+    "command": "workbench.action.toggleSidebarVisibility"
+  },
+  {
+    "key": "Ctrl+e",
+    "command": "workbench.action.focusActiveEditorGroup"
+  },
+  {
+    "key": "Ctrl+t",
+    "command": "workbench.action.terminal.toggleTerminal"
+  },
+  {
+    "key": "Ctrl+n",
+    "command": "explorer.newFile",
+    "when": "explorerViewletVisible && filesExplorerFocus && !inputFocus"
+  },
+  {
+    "key": "Ctrl+Shift+n",
+    "command": "explorer.newFolder",
+    "when": "explorerViewletVisible && filesExplorerFocus && !inputFocus"
+  },
+  {
+    "key": "Ctrl+k Ctrl+a",
+    "command": "workbench.action.toggleActivityBarVisibility"
+  },
+  {
+    "key": "Alt+n",
+    "command": "workbench.action.terminal.kill",
+    "when": "terminalFocus"
+  },
+  {
+    "key": "Alt+w",
+    "command": "workbench.action.terminal.kill",
+    "when": "terminalFocus"
+  },
+  {
+    "key": "Shift+Ctrl+[",
+    "command": "editor.fold",
+    "when": "editorFocus"
+  },
+  {
+    "key": "Shift+Ctrl+]",
+    "command": "editor.unfold",
+    "when": "editorFocus"
+  }
+]

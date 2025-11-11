@@ -1,0 +1,14 @@
+sainnhe.gruvbox-material,
+PKief.material-product-icons,
+JonathanHarty.gruvbox-material-icon-theme,
+usernamehw.errorlens,
+naumovs.color-highlight,
+esbenp.prettier-vscode,
+ms-python.vscode-pylance,
+rust-lang.rust-analyzer,
+golang.go,
+yzhang.markdown-all-in-one,
+ms-vscode.cpptools,
+kisstkondoros.vscode-gutter-preview,
+aaron-bond.better-comments
+ms-vscode.powershell
