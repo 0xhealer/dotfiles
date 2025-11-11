@@ -1,0 +1,46 @@
+[
+  {
+    "Source": "windhawk",
+    "Destination": "%APPDATA%\\Windhawk",
+    "Exclude": [".git"]
+  },
+  {
+    "Source": "fastfetch",
+    "Destination": "%LOCALAPPDATA%\\fastfetch",
+    "Exclude": [".git"]
+  },
+
+  {
+    "Source": "powershell/user_profile.ps1",
+    "Destination": "%USERPROFILE%\\.config\\powershell\\user_profile.ps1"
+  },
+  {
+    "Source": "powershell/Microsoft.PowerShell_profile.ps1",
+    "Destination": "%USERPROFILE%\\Documents\\PowerShell\\Microsoft.PowerShell_profile.ps1"
+  },
+
+  {
+    "Source": "nvim",
+    "Destination": "%LOCALAPPDATA%\\nvim",
+    "Exclude": [".git", "node_modules"]
+  },
+
+  {
+    "Source": "windows-terminal/settings.json",
+    "Destination": "%LOCALAPPDATA%\\Packages\\Microsoft.WindowsTerminal_8wekyb3d8bbwe\\LocalState\\settings.json"
+  },
+
+  {
+    "Source": "code/settings.json",
+    "Destination": "%APPDATA%\\Code\\User\\settings.json"
+  },
+  {
+    "Source": "code/keybindings.json",
+    "Destination": "%APPDATA%\\Code\\User\\keybindings.json"
+  },
+
+  {
+    "Source": "glazewm/config.yaml",
+    "Destination": "%USERPROFILE%\\.glaze-wm\\config.yaml"
+  }
+]
