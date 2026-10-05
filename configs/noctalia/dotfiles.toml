@@ -195,7 +195,6 @@ pure_black_dark = true
     builtin_ids = [ "btop", "cava", "gtk3", "gtk4", "ghostty", "kcolorscheme", "kitty", "niri", "qt", "starship" ]
     enable_community_templates = true
     community_ids = [
-        "spicetify",
         "brave",
         "discord",
         "telegram",
@@ -208,3 +207,8 @@ pure_black_dark = true
         "tmux",
         "yazi"
     ]
+
+    [theme.templates.user.spicetify_text]
+    input_path = "$XDG_CONFIG_HOME/noctalia/templates/spicetify-text.ini"
+    output_path = "$XDG_CONFIG_HOME/spicetify/Themes/text/color.ini"
+    post_hook = "sh -c 'PATH=\"$HOME/.local/bin:$HOME/.spicetify:$PATH\" spicetify -q apply --no-restart >/dev/null 2>&1 || true'"
