@@ -47,6 +47,7 @@ contains() {
   return 1
 }
 
+orig_args=("$@")
 only=()
 skip=()
 while (($#)); do
@@ -75,6 +76,13 @@ export DOTS_DRY_RUN
 
 require_user
 detect_platform
+
+# no sleep or idle suspend while installing, and nothing may stop to ask a question
+if ! is_dry && [[ -z "${DOTS_INHIBITED:-}" ]] && has systemd-inhibit && systemd-inhibit --what=sleep true >/dev/null 2>&1; then
+  export DOTS_INHIBITED=1
+  exec systemd-inhibit --what=sleep:idle --who=dotfiles --why="installing dotfiles" "$DOTS_ROOT/install.sh" "${orig_args[@]}"
+fi
+export DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a APT_LISTCHANGES_FRONTEND=none GIT_TERMINAL_PROMPT=0
 
 if [[ ! -t 0 ]] && ! is_dry; then
   die "stdin is not a terminal; run ./install.sh from an interactive shell."
