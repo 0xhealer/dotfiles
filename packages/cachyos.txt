@@ -3,6 +3,7 @@ cmake
 gdb
 valgrind
 clang
+brave-bin
 git
 github-cli
 curl
@@ -46,6 +47,8 @@ brightnessctl
 playerctl
 pavucontrol
 dolphin
+gwenview
+evince
 kio-extras
 kio-admin
 ffmpegthumbs
@@ -67,3 +70,5 @@ aur:vicinae-bin
 aur:visual-studio-code-insiders-bin
 adw-gtk-theme
 qt6ct
+obsidian
+aur:teams-for-linux

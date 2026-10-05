@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# mkvm <name> <iso> [ram_mb] [cpus] [disk_gb]
+# Creates a UEFI libvirt VM on the NAT 'default' network (virtio NIC) so the guest gets internet.
+set -Eeuo pipefail
+
+name="${1:-}"
+iso="${2:-}"
+ram="${3:-4096}"
+cpus="${4:-4}"
+disk="${5:-40}"
+uri="qemu:///system"
+
+[[ -n "$name" && -f "$iso" ]] || { echo "usage: mkvm <name> <iso> [ram_mb] [cpus] [disk_gb]" >&2; exit 1; }
+command -v virt-install >/dev/null || { echo "virt-install not found (install virt-install / virt-manager)" >&2; exit 1; }
+
+# make sure libvirtd and the NAT network are up
+sudo systemctl enable --now libvirtd.service
+virsh -c "$uri" net-info default >/dev/null 2>&1 || sudo virsh -c "$uri" net-define /usr/share/libvirt/networks/default.xml
+virsh -c "$uri" net-autostart default >/dev/null 2>&1 || sudo virsh -c "$uri" net-autostart default
+virsh -c "$uri" net-start default >/dev/null 2>&1 || true
+virsh -c "$uri" net-info default | grep -q 'Active:.*yes' || { echo "libvirt 'default' network is not active" >&2; exit 1; }
+
+iso="$(realpath "$iso")"
+# the qemu user cannot read files under a private $HOME, so stage the ISO in libvirt's image dir
+if [[ "$iso" != /var/lib/libvirt/images/* ]]; then
+  sudo install -m 644 "$iso" /var/lib/libvirt/images/
+  iso="/var/lib/libvirt/images/$(basename "$iso")"
+fi
+
+virt-install \
+  --connect "$uri" \
+  --name "$name" \
+  --memory "$ram" \
+  --vcpus "$cpus" \
+  --cpu host-passthrough \
+  --machine q35 \
+  --boot uefi \
+  --disk "size=$disk,bus=virtio,format=qcow2" \
+  --cdrom "$iso" \
+  --network network=default,model=virtio \
+  --graphics spice \
+  --video virtio \
+  --channel spicevmc \
+  --osinfo detect=on,require=off \
+  --noautoconsole
+
+virt-manager --connect "$uri" --show-domain-console "$name" >/dev/null 2>&1 &

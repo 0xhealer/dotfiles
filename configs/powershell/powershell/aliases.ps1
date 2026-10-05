@@ -172,3 +172,5 @@ function ff { fastfetch }
 
 function projects { Set-Location ~/workspace/github; ls }
 function workspace { Set-Location ~/workspace; ls }
+
+Set-Alias -Name treesitter -Value tree-sitter

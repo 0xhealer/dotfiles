@@ -59,6 +59,8 @@ ffmpegthumbs
 kf6-kimageformats
 breeze-icon-theme
 vlc
+gwenview
+evince
 copyq
 os-prober
 fontconfig

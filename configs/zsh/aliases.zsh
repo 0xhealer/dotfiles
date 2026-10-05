@@ -98,3 +98,4 @@ alias -g N='2>/dev/null'
 alias -g J='| jq'
 
 command -v code-insiders >/dev/null 2>&1 && alias code='code-insiders'
+alias treesitter='tree-sitter'
