@@ -33,6 +33,4 @@ done
 for f in "${files[@]}"; do
   cmp -s "$f" "$dest/$(basename "$f")" 2>/dev/null || run cp "$f" "$dest/"
 done
-# Wallpapers removed from the repo because they were duplicates or broken.
-[[ -e "$DOTS_ROOT/assets/wallpapers/071.jpg" ]] || run rm -f "$dest/071.jpg"
 log_ok "${#files[@]} wallpapers available in $dest"
