@@ -85,3 +85,7 @@ alias untar 'tar -xvf'
 alias ungz 'tar -xzvf'
 alias unbz2 'tar -xjvf'
 alias fishrc '$EDITOR ~/.config/fish/config.fish'
+
+if type -q code-insiders
+    alias code code-insiders
+end

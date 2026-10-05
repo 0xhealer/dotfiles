@@ -51,3 +51,8 @@ if has "$DOTS_CODE_BIN"; then
 else
   log_warn "$DOTS_CODE_BIN not found, extensions not installed"
 fi
+
+if [[ "$DOTS_CODE_BIN" != code ]] && has "$DOTS_CODE_BIN"; then
+  run mkdir -p "$HOME/.local/bin"
+  run ln -sf "$(command -v "$DOTS_CODE_BIN")" "$HOME/.local/bin/code"
+fi

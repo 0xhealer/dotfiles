@@ -39,18 +39,18 @@ layout {
     }
 }
 
-// eDP-1 is the main screen (focused at startup); the TV sits to its right
-output "eDP-1" {
-    mode "1920x1080@120.000"
-    scale 1.05
-    position x=0 y=0
-    focus-at-startup
-}
-
+// HDMI-A-1 sits above eDP-1; eDP-1 is the main screen (focused at startup)
 output "HDMI-A-1" {
     mode "1920x1080@60.000"
     scale 1
-    position x=1829 y=0
+    position x=0 y=0
+}
+
+output "eDP-1" {
+    mode "1920x1080@120.000"
+    scale 1
+    position x=0 y=1080
+    focus-at-startup
 }
 
 prefer-no-csd

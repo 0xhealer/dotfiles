@@ -96,3 +96,5 @@ alias -g H='| head'
 alias -g T='| tail'
 alias -g N='2>/dev/null'
 alias -g J='| jq'
+
+command -v code-insiders >/dev/null 2>&1 && alias code='code-insiders'
