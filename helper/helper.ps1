@@ -70,12 +70,17 @@ function Install-WingetPackage {
         Write-Info "already installed: $Id"
         return $true
     }
-    & winget install --id $Id --exact --silent --disable-interactivity --accept-package-agreements --accept-source-agreements | Out-Host
-    if ($LASTEXITCODE -eq 0) {
+    # Start-Process keeps winget on the real console. Piping it (| Out-Host) makes winget think its output is
+    # redirected, so its spinner is printed on a new line for every frame instead of redrawing in place.
+    $winget = (Get-Command winget -ErrorAction Stop).Source
+    $proc = Start-Process -FilePath $winget -NoNewWindow -Wait -PassThru -ArgumentList @(
+        'install', '--id', $Id, '--exact', '--silent', '--disable-interactivity',
+        '--accept-package-agreements', '--accept-source-agreements')
+    if ($proc.ExitCode -eq 0) {
         Write-Ok "installed $Id"
         return $true
     }
-    Write-Warn "winget failed for $Id (exit $LASTEXITCODE)"
+    Write-Warn "winget failed for $Id (exit $($proc.ExitCode))"
     return $false
 }
 
