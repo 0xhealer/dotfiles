@@ -1,0 +1,29 @@
+
+/* dotfiles overlay on the text theme: flat dark surfaces from the wallpaper palette.
+   Spotify cannot be transparent itself, niri's window opacity and blur show the wallpaper through them. */
+:root {
+    --font-family: "JetBrainsMono NF", "JetBrains Mono", monospace;
+    --font-size: 14px;
+    --border-radius: 6px;
+    --border-style: solid;
+    --display-header-image: block;
+    --display-tracklist-image: block;
+}
+.encore-dark-theme,
+.encore-dark-theme .encore-base-set {
+    --background-base: var(--spice-main);
+    --background-highlight: rgba(var(--spice-rgb-highlight), 0.5);
+    --background-press: var(--spice-highlight);
+    --background-elevated-base: var(--spice-main);
+    --background-elevated-highlight: rgba(var(--spice-rgb-highlight), 0.5);
+    --background-elevated-press: var(--spice-highlight);
+}
+.Root__top-container,
+.Root__main-view,
+.Root__nav-bar,
+.Root__right-sidebar,
+.Root__globalNav,
+.main-nowPlayingBar-container,
+.main-view-container {
+    background-color: var(--spice-main) !important;
+}

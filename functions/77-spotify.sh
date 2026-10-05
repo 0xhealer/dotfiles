@@ -86,20 +86,13 @@ if [[ -d "$spotify_path" && "$DOTS_FAMILY" != fedora ]]; then
 fi
 
 spicetify config spotify_path "$spotify_path" prefs_path "$prefs_path" >/dev/null 2>&1 || true
-if [[ "$DOTS_WM" == niri ]]; then
-  # Noctalia's spicetify template writes the wallpaper colours into Comfy's color.ini
-  if [[ ! -f "$spicetify_dir/Themes/Comfy/color.ini" ]]; then
-    tmp="$(mktemp -d)"
-    if GIT_TERMINAL_PROMPT=0 git clone --depth 1 -q https://github.com/Comfy-Themes/Spicetify "$tmp/comfy"; then
-      cp -a "$tmp/comfy/Comfy" "$spicetify_dir/Themes/Comfy"
-    else
-      log_warn "could not download the Comfy Spicetify theme, falling back to Sleek"
-    fi
-    rm -rf "$tmp"
-  fi
-fi
-if [[ "$DOTS_WM" == niri && -f "$spicetify_dir/Themes/Comfy/color.ini" ]]; then
-  spicetify config current_theme Comfy color_scheme Comfy inject_css 1 replace_colors 1 overwrite_assets 1 inject_theme_js 1 >/dev/null 2>&1 || true
+if [[ "$DOTS_WM" == niri && -d "$spicetify_dir/Themes/text" ]]; then
+  # text theme + overlay; Noctalia's user template writes the wallpaper colours into Themes/text/color.ini
+  theme="$spicetify_dir/Themes/text"
+  [[ -f "$theme/user.css.orig" ]] || cp "$theme/user.css" "$theme/user.css.orig"
+  cat "$theme/user.css.orig" "$DOTS_ROOT/configs/spicetify/overlay.css" >"$theme/user.css"
+  grep -q '^\[Noctalia\]' "$theme/color.ini" 2>/dev/null || cp "$DOTS_ROOT/configs/spicetify/color.ini" "$theme/color.ini"
+  spicetify config current_theme text color_scheme Noctalia inject_css 1 replace_colors 1 overwrite_assets 1 inject_theme_js 1 >/dev/null 2>&1 || true
 else
   spicetify config current_theme Sleek color_scheme Catppuccin inject_css 1 replace_colors 1 overwrite_assets 1 >/dev/null 2>&1 || true
 fi

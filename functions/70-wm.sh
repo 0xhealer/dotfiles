@@ -131,6 +131,8 @@ setup_niri() {
   ensure_executable "$c/scripts/wallpaper-rotate"
   link_config "$c/scripts/wallpaper-rotate" "$HOME/.local/bin/wallpaper-rotate"
 
+  run mkdir -p "$HOME/.config/noctalia/templates"
+  link_config "$c/noctalia/templates/spicetify-text.ini" "$HOME/.config/noctalia/templates/spicetify-text.ini"
   link_config "$c/noctalia/dotfiles.toml" "$HOME/.config/noctalia/dotfiles.toml"
   if has noctalia && ! noctalia config validate >/dev/null 2>&1; then
     log_warn "noctalia rejected configs/noctalia/dotfiles.toml, removing the copy"
