@@ -80,6 +80,16 @@ if (-not $DryRun) {
     }
 }
 
+# keep the machine and screen awake so sleep or a lock screen cannot interrupt the run
+$keepAwake = $false
+if (-not $DryRun) {
+    try {
+        Add-Type -Namespace Dots -Name Power -MemberDefinition '[DllImport("kernel32.dll")] public static extern uint SetThreadExecutionState(uint flags);'
+        [void][Dots.Power]::SetThreadExecutionState(0x80000003)
+        $keepAwake = $true
+    } catch { }
+}
+
 $failed = @()
 try {
     foreach ($file in $files) {
@@ -99,6 +109,7 @@ try {
         }
     }
 } finally {
+    if ($keepAwake) { [void][Dots.Power]::SetThreadExecutionState(0x80000000) }
     if ($transcriptStarted) { Stop-Transcript | Out-Null }
 }
 
