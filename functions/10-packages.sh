@@ -8,6 +8,10 @@ detect_platform
 log_step "Packages ($DOTS_DISTRO)"
 
 setup_fedora_repos() {
+  if ! rpm -q rpmfusion-free-release >/dev/null 2>&1; then
+    sudo_run dnf install -y "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm" ||
+      log_warn "could not add RPM Fusion, vlc will be skipped"
+  fi
   sudo_run dnf copr enable -y scottames/vicinae
   sudo_run dnf copr enable -y pgdev/ghostty
 }
