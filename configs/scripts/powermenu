@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+opts=$'\uf023  Lock\n\uf2f5  Logout\n\uf186  Suspend\n\uf021  Reboot\n\uf011  Power off'
+
+choice="$(printf '%s' "$opts" | rofi -dmenu -i -p "Power" -theme-str 'window {width: 320px;} listview {lines: 5;}')"
+
+case "$choice" in
+  *Lock) i3lock -c 1e1e2e ;;
+  *Logout) i3-msg exit ;;
+  *Suspend) systemctl suspend ;;
+  *Reboot) systemctl reboot ;;
+  *"Power off") systemctl poweroff ;;
+esac

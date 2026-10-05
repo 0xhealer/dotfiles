@@ -1,0 +1,166 @@
+set $mod Mod4
+set $term kitty
+set $alt_term ghostty
+set $browser sh -c 'for b in helium-browser helium helium-bin; do command -v "$b" >/dev/null && exec "$b"; done; exec xdg-open about:blank'
+set $files thunar
+set $launcher rofi -show drun
+set $runner dmenu-themed
+
+font pango:JetBrainsMono Nerd Font 10
+
+include ~/.config/matugen/generated/i3-colors.conf
+
+floating_modifier $mod
+focus_follows_mouse no
+default_border none
+default_floating_border none
+hide_edge_borders both
+workspace_auto_back_and_forth yes
+
+gaps inner 8
+gaps outer 0
+smart_gaps on
+
+# apps
+bindsym $mod+Return exec --no-startup-id $term
+bindsym $mod+Shift+Return exec --no-startup-id $alt_term
+bindsym $mod+b exec --no-startup-id $browser
+bindsym $mod+e exec --no-startup-id $files
+bindsym $mod+space exec --no-startup-id $launcher
+bindsym $mod+d exec --no-startup-id $launcher
+bindsym $mod+Shift+d exec --no-startup-id $runner
+bindsym $mod+s exec --no-startup-id pavucontrol
+bindsym $mod+Shift+v exec --no-startup-id copyq toggle
+bindsym $mod+n exec --no-startup-id dunstctl set-paused toggle
+bindsym $mod+Shift+n exec --no-startup-id dunstctl history-pop
+bindsym $mod+Shift+slash exec --no-startup-id ~/.local/bin/keyhelp
+
+# windows
+bindsym $mod+q kill
+bindsym $mod+f fullscreen toggle
+bindsym $mod+m fullscreen toggle
+bindsym $mod+v floating toggle
+bindsym $mod+c move position center
+bindsym $mod+Tab exec --no-startup-id rofi -show window
+bindsym $mod+o exec --no-startup-id rofi -show window
+
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+bindsym $mod+Left  focus left
+bindsym $mod+Down  focus down
+bindsym $mod+Up    focus up
+bindsym $mod+Right focus right
+
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+bindsym $mod+Shift+Left  move left
+bindsym $mod+Shift+Down  move down
+bindsym $mod+Shift+Up    move up
+bindsym $mod+Shift+Right move right
+
+bindsym $mod+Ctrl+Left  focus output left
+bindsym $mod+Ctrl+Right focus output right
+bindsym $mod+Ctrl+Shift+Left  move workspace to output left
+bindsym $mod+Ctrl+Shift+Right move workspace to output right
+
+bindsym $mod+comma focus parent
+bindsym $mod+period focus child
+
+# layout
+bindsym $mod+t layout tabbed
+bindsym $mod+Shift+t layout toggle split
+bindsym $mod+Ctrl+s layout stacking
+bindsym $mod+Ctrl+h split h
+bindsym $mod+Ctrl+v split v
+
+mode "resize" {
+    bindsym h resize shrink width 10 px or 10 ppt
+    bindsym j resize grow height 10 px or 10 ppt
+    bindsym k resize shrink height 10 px or 10 ppt
+    bindsym l resize grow width 10 px or 10 ppt
+    bindsym Left  resize shrink width 10 px or 10 ppt
+    bindsym Down  resize grow height 10 px or 10 ppt
+    bindsym Up    resize shrink height 10 px or 10 ppt
+    bindsym Right resize grow width 10 px or 10 ppt
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+r mode "default"
+}
+bindsym $mod+r mode "resize"
+bindsym $mod+minus resize shrink width 5 ppt
+bindsym $mod+equal resize grow width 5 ppt
+
+# workspaces
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace number 9
+bindsym $mod+Next workspace next
+bindsym $mod+Prior workspace prev
+bindsym $mod+Shift+Next move container to workspace next
+bindsym $mod+Shift+Prior move container to workspace prev
+
+# session
+bindsym $mod+Mod1+l exec --no-startup-id i3lock -c 1e1e2e
+bindsym $mod+Shift+e exec --no-startup-id ~/.local/bin/powermenu
+bindsym $mod+Shift+r reload
+bindsym $mod+Shift+c restart
+bindsym $mod+Shift+p exec --no-startup-id xset dpms force off
+
+# wallpaper
+bindsym $mod+w exec --no-startup-id ~/.local/bin/wallpaper-select
+bindsym $mod+Shift+w exec --no-startup-id ~/.local/bin/wallpaper-set
+bindsym $mod+Ctrl+w exec --no-startup-id ~/.local/bin/wallpaper-rotate toggle
+exec --no-startup-id sh -c 'command -v vmware-user-suid-wrapper >/dev/null 2>&1 && exec vmware-user-suid-wrapper'
+exec --no-startup-id sh -c 'command -v spice-vdagent >/dev/null 2>&1 && exec spice-vdagent'
+exec --no-startup-id sh -c 'command -v VBoxClient-all >/dev/null 2>&1 && exec VBoxClient-all'
+exec --no-startup-id ~/.local/bin/wallpaper-rotate toggle
+
+# media
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +5%
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
+bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
+bindsym XF86AudioNext exec --no-startup-id playerctl next
+bindsym XF86AudioPrev exec --no-startup-id playerctl previous
+
+# screenshots
+bindsym Print exec --no-startup-id sh -c 'maim -s | xclip -selection clipboard -t image/png'
+bindsym Ctrl+Print exec --no-startup-id sh -c 'mkdir -p ~/Pictures/Screenshots && maim ~/Pictures/Screenshots/$(date +%Y%m%d-%H%M%S).png'
+bindsym Alt+Print exec --no-startup-id sh -c 'maim -i "$(xdotool getactivewindow)" | xclip -selection clipboard -t image/png'
+bindsym $mod+Shift+s exec --no-startup-id sh -c 'maim -s | xclip -selection clipboard -t image/png'
+
+for_window [class="Pavucontrol"] floating enable
+for_window [class="Arandr"] floating enable
+for_window [class=".*"] border none
+for_window [class="Nm-connection-editor"] floating enable
+for_window [class="copyq"] floating enable
+for_window [window_role="pop-up"] floating enable
+
+exec_always --no-startup-id bash ~/.config/polybar/launch.sh
+exec_always --no-startup-id sh -c "pgrep -x picom >/dev/null || { c=~/.config/picom/picom.conf; systemd-detect-virt -q && c=~/.config/picom/picom-vm.conf; exec picom --config \$c -b; }"
+exec_always --no-startup-id ~/.local/bin/wallpaper-set --restore
+exec --no-startup-id ~/.local/bin/wallpaper-rotate
+exec --no-startup-id dunst
+exec --no-startup-id copyq

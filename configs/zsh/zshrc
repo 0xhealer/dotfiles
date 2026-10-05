@@ -1,0 +1,66 @@
+[[ -o interactive ]] || return 0
+
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$HOME/go/bin:$PATH"
+export EDITOR=nvim
+export VISUAL=nvim
+export PAGER=less
+export STARSHIP_CONFIG="$HOME/.config/starship.toml"
+export LESS='-R -F -X -i -P %f (%i/%m) '
+export LESSHISTFILE=/dev/null
+export LESS_TERMCAP_mb=$'\e[1;32m'
+export LESS_TERMCAP_md=$'\e[1;32m'
+export LESS_TERMCAP_me=$'\e[0m'
+export LESS_TERMCAP_se=$'\e[0m'
+export LESS_TERMCAP_so=$'\e[01;33m'
+export LESS_TERMCAP_ue=$'\e[0m'
+export LESS_TERMCAP_us=$'\e[1;4;31m'
+
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=50000
+SAVEHIST=50000
+setopt HIST_IGNORE_ALL_DUPS HIST_REDUCE_BLANKS INC_APPEND_HISTORY SHARE_HISTORY HIST_EXPIRE_DUPS_FIRST HIST_IGNORE_SPACE
+setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS PUSHD_SILENT
+setopt ALWAYS_TO_END AUTO_MENU COMPLETE_IN_WORD AUTO_LIST AUTO_PARAM_SLASH
+setopt EXTENDED_GLOB NO_CASE_GLOB GLOB_DOTS
+setopt INTERACTIVE_COMMENTS NO_BEEP PROMPT_SUBST
+
+mkdir -p "$HOME/.cache/zsh"
+autoload -Uz compinit
+if [[ -n $HOME/.cache/zcompdump(#qN.mh+24) ]]; then
+  compinit -d "$HOME/.cache/zcompdump"
+else
+  compinit -C -d "$HOME/.cache/zcompdump"
+fi
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:descriptions' format '%F{yellow}-- %d --%f'
+zstyle ':completion:*:warnings' format '%F{red}No matches found%f'
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "$HOME/.cache/zsh"
+
+for f in "$HOME"/.config/zsh/*.zsh(N) "$HOME"/.config/zsh/functions/*.zsh(N) "$HOME"/.config/shell/*.sh(N); do
+  source "$f"
+done
+
+_load_zsh_plugin() {
+  local name=$1 file=$2 candidate
+  for candidate in \
+    "/usr/share/$name/$file" \
+    "/usr/share/zsh/plugins/$name/$file" \
+    "/usr/share/zsh/site-contrib/$file" \
+    "/usr/local/share/$name/$file" \
+    "$HOME/.zsh/$name/$file"; do
+    [[ -f $candidate ]] && { source "$candidate"; return 0; }
+  done
+  return 1
+}
+
+(( $+commands[starship] )) && eval "$(starship init zsh)"
+
+_load_zsh_plugin zsh-autosuggestions zsh-autosuggestions.zsh && bindkey '^ ' autosuggest-accept
+_load_zsh_plugin zsh-syntax-highlighting zsh-syntax-highlighting.zsh
+unset -f _load_zsh_plugin
+
+[[ -r $HOME/.zshrc.local ]] && source "$HOME/.zshrc.local"

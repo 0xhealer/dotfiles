@@ -1,0 +1,12 @@
+# id|name|command|shortcut
+dots-terminal|Terminal|kitty|Meta+Return
+dots-ghostty|Ghostty|ghostty|Meta+Shift+Return
+dots-browser|Browser|sh -c "exec $HOME/.local/bin/browser-open"|Meta+B
+dots-files|Files|sh -c "exec xdg-open \"$HOME\""|Meta+E
+dots-launcher|Launcher|krunner|Meta+Space
+dots-launcher2|Launcher alt|krunner|Meta+D
+dots-mixer|Volume mixer|pavucontrol|Meta+S
+dots-clipboard|Clipboard history|copyq toggle|Meta+Shift+V
+dots-wallpaper|Wallpaper picker|sh -c "exec $HOME/.local/bin/wallpaper-select"|Meta+W
+dots-wallpaper-random|Random wallpaper|sh -c "exec $HOME/.local/bin/wallpaper-set"|Meta+Shift+W
+dots-wallpaper-rotate|Wallpaper rotation|sh -c "exec $HOME/.local/bin/wallpaper-rotate toggle"|Meta+Ctrl+W

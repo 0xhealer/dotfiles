@@ -1,0 +1,32 @@
+name: Update LICENSE year
+
+on:
+  schedule:
+    - cron: "0 0 1 1 *"   # 00:00 UTC, Jan 1 every year
+  workflow_dispatch:        # allows manual trigger for testing
+
+permissions:
+  contents: write
+
+jobs:
+  update-year:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bump copyright year
+        run: |
+          YEAR=$(date +%Y)
+          sed -i "s/Copyright (c) [0-9]\{4\}/Copyright (c) $YEAR/" LICENSE
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet LICENSE; then
+            echo "No change needed."
+          else
+            git add LICENSE
+            git commit -m "chore: update LICENSE year to $(date +%Y)"
+            git push
+          fi

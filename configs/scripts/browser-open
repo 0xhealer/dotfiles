@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+for b in helium-browser helium helium-bin; do
+  command -v "$b" >/dev/null 2>&1 && exec "$b" "$@"
+done
+exec xdg-open about:blank

@@ -1,0 +1,38 @@
+[include]
+    path = ~/.gitconfig.local
+
+[init]
+    defaultBranch = main
+
+[core]
+    editor = nvim
+    pager = less -FRX
+    autocrlf = input
+
+[pull]
+    rebase = true
+
+[push]
+    autoSetupRemote = true
+
+[fetch]
+    prune = true
+
+[rebase]
+    autoStash = true
+
+[merge]
+    conflictStyle = zdiff3
+
+[diff]
+    algorithm = histogram
+    colorMoved = default
+
+[rerere]
+    enabled = true
+
+[alias]
+    st = status -sb
+    lg = log --oneline --graph --decorate
+    last = log -1 HEAD --stat
+    unstage = reset HEAD --

@@ -1,0 +1,24 @@
+[shell.panel]
+transparency_mode = "glass"
+
+[bar.default]
+background_opacity = 0.85
+compositor_blur = true
+
+[wallpaper]
+directory = "~/Pictures/Wallpapers"
+
+[widget.clock]
+format = "{:%H:%M %a, %b %d}"
+
+# Colours come from the wallpaper (Material You, like matugen) and are rendered into every app below
+[theme]
+mode = "dark"
+source = "wallpaper"
+wallpaper_scheme = "m3-tonal-spot"
+
+[theme.templates]
+enable_builtin_templates = true
+builtin_ids = ["niri", "kitty", "ghostty", "gtk3", "gtk4", "qt", "kcolorscheme", "btop", "cava"]
+enable_community_templates = true
+community_ids = ["vicinae", "vscode", "yazi", "lazygit", "zathura", "obsidian", "discord", "telegram", "steam", "zen-browser", "spicetify"]

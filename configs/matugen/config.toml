@@ -1,0 +1,65 @@
+[config]
+
+[templates.i3]
+input_path = '~/.config/matugen/templates/i3-colors.conf'
+output_path = '~/.config/matugen/generated/i3-colors.conf'
+
+[templates.polybar]
+input_path = '~/.config/matugen/templates/polybar-colors.ini'
+output_path = '~/.config/matugen/generated/polybar-colors.ini'
+
+[templates.rofi]
+input_path = '~/.config/matugen/templates/rofi-colors.rasi'
+output_path = '~/.config/matugen/generated/rofi-colors.rasi'
+
+[templates.kitty]
+input_path = '~/.config/matugen/templates/kitty-colors.conf'
+output_path = '~/.config/matugen/generated/kitty-colors.conf'
+
+[templates.ghostty]
+input_path = '~/.config/matugen/templates/ghostty-colors'
+output_path = '~/.config/matugen/generated/ghostty-colors'
+
+[templates.dunst]
+input_path = '~/.config/matugen/templates/dunst-colors.conf'
+output_path = '~/.config/dunst/dunstrc.d/90-matugen.conf'
+
+[templates.dmenu]
+input_path = '~/.config/matugen/templates/dmenurc'
+output_path = '~/.config/matugen/generated/dmenurc'
+
+[templates.gtk3]
+input_path = '~/.config/matugen/templates/gtk3.css'
+output_path = '~/.config/gtk-3.0/gtk.css'
+
+[templates.gtk4]
+input_path = '~/.config/matugen/templates/gtk4.css'
+output_path = '~/.config/gtk-4.0/gtk.css'
+
+[templates.qt5ct]
+input_path = '~/.config/matugen/templates/qt-colors.conf'
+output_path = '~/.config/qt5ct/colors/matugen.conf'
+
+[templates.qt6ct]
+input_path = '~/.config/matugen/templates/qt-colors.conf'
+output_path = '~/.config/qt6ct/colors/matugen.conf'
+
+[templates.btop]
+input_path = '~/.config/matugen/templates/btop.theme'
+output_path = '~/.config/btop/themes/matugen.theme'
+
+[templates.vscode]
+input_path = '~/.config/matugen/templates/vscode-theme.json'
+output_path = '~/.vscode/extensions/dotfiles.matugen-theme/themes/matugen-color-theme.json'
+
+[templates.fzf_sh]
+input_path = '~/.config/matugen/templates/fzf-colors.sh'
+output_path = '~/.config/matugen/generated/fzf-colors.sh'
+
+[templates.fzf_fish]
+input_path = '~/.config/matugen/templates/fzf-colors.fish'
+output_path = '~/.config/matugen/generated/fzf-colors.fish'
+
+[templates.kde]
+input_path = '~/.config/matugen/templates/kde-colors.colors'
+output_path = '~/.local/share/color-schemes/Matugen.colors'

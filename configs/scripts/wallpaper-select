@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
+dir="$HOME/Pictures/Wallpapers"
+cache="$HOME/.cache/wallpaper-thumbs"
+theme="$HOME/.config/rofi/wallpaper.rasi"
+
+if command -v waypaper >/dev/null 2>&1; then
+  exec waypaper
+fi
+
+mkdir -p "$cache"
+if command -v magick >/dev/null 2>&1; then
+  im=(magick)
+elif command -v convert >/dev/null 2>&1; then
+  im=(convert)
+else
+  im=()
+fi
+
+thumb() {
+  local f="$1" t
+  t="$cache/$(basename "$f").$(stat -c %Y "$f").png"
+  if [[ ! -f "$t" ]]; then
+    if ((${#im[@]})); then
+      "${im[@]}" "${f}[0]" -thumbnail 480x270^ -gravity center -extent 480x270 "$t" 2>/dev/null || t="$f"
+    else
+      t="$f"
+    fi
+  fi
+  printf '%s' "$t"
+}
+
+choice="$(
+  find "$dir" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) | sort |
+    while IFS= read -r f; do
+      printf '%s\0icon\x1f%s\n' "$(basename "$f")" "$(thumb "$f")"
+    done |
+    rofi -dmenu -i -show-icons -p "Wallpaper" -theme "$theme"
+)"
+
+[[ -n "$choice" ]] && exec "$HOME/.local/bin/wallpaper-set" "$dir/$choice"
