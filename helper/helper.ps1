@@ -73,9 +73,15 @@ function Install-WingetPackage {
     # Start-Process keeps winget on the real console. Piping it (| Out-Host) makes winget think its output is
     # redirected, so its spinner is printed on a new line for every frame instead of redrawing in place.
     $winget = (Get-Command winget -ErrorAction Stop).Source
-    $proc = Start-Process -FilePath $winget -NoNewWindow -Wait -PassThru -ArgumentList @(
+    $proc = Start-Process -FilePath $winget -NoNewWindow -PassThru -ArgumentList @(
         'install', '--id', $Id, '--exact', '--silent', '--disable-interactivity',
         '--accept-package-agreements', '--accept-source-agreements')
+    # a hung installer must not block the whole run
+    if (-not $proc.WaitForExit(20 * 60 * 1000)) {
+        try { Stop-Process -Id $proc.Id -Force -ErrorAction Stop } catch { }
+        Write-Warn "winget timed out for $Id after 20 minutes, continuing"
+        return $false
+    }
     if ($proc.ExitCode -eq 0) {
         Write-Ok "installed $Id"
         return $true
