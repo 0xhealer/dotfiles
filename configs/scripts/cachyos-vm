@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# cachyos-vm [iso]: create the "cachyos" VM (libvirt NAT network, virtio NIC, UEFI) from the latest CachyOS desktop ISO or the one given
+set -Eeuo pipefail
+
+iso="${1:-}"
+here="$(dirname "$(readlink -f "$0")")"
+
+if [[ -z "$iso" ]]; then
+  cache="$HOME/.cache/dotfiles/iso"
+  mkdir -p "$cache"
+  feed="https://sourceforge.net/projects/cachyos-arch/rss?path=/gui-installer/desktop"
+  url="$(curl -fsSL "$feed" | grep -oE 'https://sourceforge\.net/projects/cachyos-arch/files/gui-installer/desktop/[0-9]{6}/cachyos-desktop-linux-[0-9]{6}\.iso/download' | sort -u | tail -n1 || true)"
+  [[ -n "$url" ]] || { echo "could not find the latest CachyOS ISO, download one from https://cachyos.org/download and run: cachyos-vm /path/to.iso" >&2; exit 1; }
+  iso="$cache/$(basename "$(dirname "$url")")"
+  if [[ ! -f "$iso" ]]; then
+    curl -fL -C - -o "$iso.part" "$url"
+    mv "$iso.part" "$iso"
+  fi
+fi
+
+virsh -c qemu:///system dominfo "${VM_NAME:-cachyos}" >/dev/null 2>&1 && { echo "VM ${VM_NAME:-cachyos} already exists: virt-manager" >&2; exit 0; }
+
+mkvm_bin="$here/mkvm"
+[[ -x "$mkvm_bin" ]] || mkvm_bin="$(command -v mkvm)"
+exec "$mkvm_bin" "${VM_NAME:-cachyos}" "$iso" "${VM_RAM:-8192}" "${VM_CPUS:-4}" "${VM_DISK:-80}"

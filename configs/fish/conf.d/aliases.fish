@@ -89,3 +89,4 @@ alias fishrc '$EDITOR ~/.config/fish/config.fish'
 if type -q code-insiders
     alias code code-insiders
 end
+alias treesitter tree-sitter

@@ -53,6 +53,8 @@ rofi
 dmenu
 picom
 feh
+gwenview
+evince
 gnome-themes-extra
 qt5ct
 qt6ct
