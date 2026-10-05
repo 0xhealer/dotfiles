@@ -155,9 +155,9 @@ pkg_install() {
   ((${#pkgs[@]})) || return 0
 
   case "$DOTS_FAMILY" in
-    debian) sudo_run env DEBIAN_FRONTEND=noninteractive apt-get install -y "${pkgs[@]}" ;;
+    debian) sudo_run env DEBIAN_FRONTEND=noninteractive apt-get install -y -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Dpkg::Options::=--force-confold "${pkgs[@]}" ;;
     arch) sudo_run pacman -S --needed --noconfirm "${pkgs[@]}" ;;
-    fedora) sudo_run dnf install -y "$(dnf_skip_flag)" "${pkgs[@]}" ;;
+    fedora) sudo_run dnf install -y --setopt=retries=5 --setopt=timeout=30 "$(dnf_skip_flag)" "${pkgs[@]}" ;;
   esac
 }
 
