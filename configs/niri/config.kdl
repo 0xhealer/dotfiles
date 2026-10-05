@@ -1,0 +1,172 @@
+input {
+    keyboard {
+        xkb {
+            layout "us"
+        }
+        numlock
+    }
+
+    touchpad {
+        tap
+        dwt
+        natural-scroll
+    }
+
+    mouse {
+    }
+}
+
+layout {
+    gaps 8
+    center-focused-column "never"
+
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+
+    default-column-width { proportion 0.5; }
+
+    focus-ring {
+        width 2
+        active-color "#cba6f7"
+        inactive-color "#45475a"
+    }
+
+    border {
+        off
+    }
+}
+
+prefer-no-csd
+
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+spawn-at-startup "noctalia"
+spawn-at-startup "sh" "-c" "exec $HOME/.local/bin/wallpaper-rotate"
+spawn-at-startup "sh" "-c" "command -v vicinae >/dev/null && exec vicinae server"
+
+window-rule {
+    geometry-corner-radius 10
+    clip-to-geometry true
+    // without this niri paints a solid ring-coloured rectangle behind the focused window,
+    // which makes a translucent window look opaque
+    draw-border-with-background false
+}
+
+// VS Code is Electron and cannot be transparent itself, so niri makes the window translucent
+window-rule {
+    match app-id="^[Cc]ode(-oss)?$"
+    opacity 0.88
+}
+
+// @BLUR@
+
+binds {
+    Mod+Shift+Slash { show-hotkey-overlay; }
+
+    Mod+Return       { spawn "kitty"; }
+    Mod+Shift+Return { spawn "ghostty"; }
+    Mod+B { spawn "sh" "-c" "for b in helium-browser helium helium-bin; do command -v \"$b\" >/dev/null && exec \"$b\"; done; exec xdg-open about:blank"; }
+    Mod+E { spawn "thunar"; }
+    Mod+Space       { spawn "sh" "-c" "if command -v vicinae >/dev/null; then exec vicinae toggle; else exec noctalia msg panel-toggle launcher; fi"; }
+    Mod+D           { spawn "sh" "-c" "if command -v vicinae >/dev/null; then exec vicinae toggle; else exec noctalia msg panel-toggle launcher; fi"; }
+    Mod+Shift+D     { spawn "noctalia" "msg" "panel-toggle" "launcher"; }
+    Mod+S           { spawn "noctalia" "msg" "panel-toggle" "control-center"; }
+    Mod+Shift+V     { spawn "noctalia" "msg" "panel-toggle" "clipboard"; }
+    Mod+N           { spawn "noctalia" "msg" "notification-dnd-toggle"; }
+
+    Mod+W       { spawn "sh" "-c" "if command -v qs >/dev/null && [ -f $HOME/.local/share/noctalia/plugins/wallpaperCarousel/plugin.toml ]; then exec noctalia msg plugin yngwe/wallpaperCarousel:service all toggle; else notify-send 'Wallpaper Carousel unavailable' 'needs quickshell and the plugin, picked a random wallpaper instead'; exec noctalia msg wallpaper-random; fi"; }
+    Mod+Ctrl+W  { spawn "sh" "-c" "exec $HOME/.local/bin/wallpaper-rotate toggle"; }
+    Mod+Shift+W { spawn "noctalia" "msg" "wallpaper-random"; }
+
+    Mod+Alt+L   { spawn "noctalia" "msg" "session" "lock"; }
+    Mod+Shift+E { spawn "noctalia" "msg" "panel-toggle" "session"; }
+    Mod+Shift+R { spawn "noctalia" "msg" "config-reload"; }
+    Mod+Shift+P { power-off-monitors; }
+
+    XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "-l" "1.0" "@DEFAULT_AUDIO_SINK@" "5%+"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
+    XF86AudioMute        allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+    XF86AudioMicMute     allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+    XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+5%"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "5%-"; }
+    XF86AudioPlay allow-when-locked=true { spawn "playerctl" "play-pause"; }
+    XF86AudioNext allow-when-locked=true { spawn "playerctl" "next"; }
+    XF86AudioPrev allow-when-locked=true { spawn "playerctl" "previous"; }
+
+    Mod+Q repeat=false { close-window; }
+    Mod+Tab { spawn "noctalia" "msg" "window-switcher"; }
+    Mod+O repeat=false { toggle-overview; }
+
+    Mod+Left  { focus-column-left; }
+    Mod+Down  { focus-window-down; }
+    Mod+Up    { focus-window-up; }
+    Mod+Right { focus-column-right; }
+    Mod+H     { focus-column-left; }
+    Mod+J     { focus-window-down; }
+    Mod+K     { focus-window-up; }
+    Mod+L     { focus-column-right; }
+
+    Mod+Shift+Left  { move-column-left; }
+    Mod+Shift+Down  { move-window-down; }
+    Mod+Shift+Up    { move-window-up; }
+    Mod+Shift+Right { move-column-right; }
+    Mod+Shift+H     { move-column-left; }
+    Mod+Shift+J     { move-window-down; }
+    Mod+Shift+K     { move-window-up; }
+    Mod+Shift+L     { move-column-right; }
+
+    Mod+Ctrl+Left  { focus-monitor-left; }
+    Mod+Ctrl+Right { focus-monitor-right; }
+    Mod+Ctrl+Shift+Left  { move-column-to-monitor-left; }
+    Mod+Ctrl+Shift+Right { move-column-to-monitor-right; }
+
+    Mod+Next       { focus-workspace-down; }
+    Mod+Prior      { focus-workspace-up; }
+    Mod+Shift+Next  { move-column-to-workspace-down; }
+    Mod+Shift+Prior { move-column-to-workspace-up; }
+
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+    Mod+Shift+1 { move-column-to-workspace 1; }
+    Mod+Shift+2 { move-column-to-workspace 2; }
+    Mod+Shift+3 { move-column-to-workspace 3; }
+    Mod+Shift+4 { move-column-to-workspace 4; }
+    Mod+Shift+5 { move-column-to-workspace 5; }
+    Mod+Shift+6 { move-column-to-workspace 6; }
+    Mod+Shift+7 { move-column-to-workspace 7; }
+    Mod+Shift+8 { move-column-to-workspace 8; }
+    Mod+Shift+9 { move-column-to-workspace 9; }
+
+    Mod+Comma  { consume-window-into-column; }
+    Mod+Period { expel-window-from-column; }
+
+    Mod+R       { switch-preset-column-width; }
+    Mod+F       { fullscreen-window; }
+    Mod+M       { maximize-column; }
+    Mod+C       { center-column; }
+    Mod+Minus   { set-column-width "-5%"; }
+    Mod+Equal   { set-column-width "+5%"; }
+    Mod+V       { toggle-window-floating; }
+    Mod+T       { toggle-column-tabbed-display; }
+
+    Print      { screenshot; }
+    Ctrl+Print { screenshot-screen; }
+    Alt+Print  { screenshot-window; }
+    Mod+Shift+S { screenshot; }
+}
+
+// @NOCTALIA@

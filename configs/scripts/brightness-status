@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+command -v brightnessctl >/dev/null 2>&1 || exit 0
+pct="$(brightnessctl -m 2>/dev/null | awk -F, 'NR==1 {print $4}')"
+[[ -n "$pct" ]] && printf '\uf185 %s\n' "$pct"

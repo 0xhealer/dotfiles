@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+rc="${XDG_CONFIG_HOME:-$HOME/.config}/matugen/generated/dmenurc"
+# shellcheck disable=SC1090
+[[ -r $rc ]] && . "$rc"
+exec dmenu_run -b \
+  -fn "${DMENU_FONT:-JetBrainsMono Nerd Font:size=10}" \
+  -nb "${DMENU_NB:-#1e1e2e}" -nf "${DMENU_NF:-#cdd6f4}" \
+  -sb "${DMENU_SB:-#cba6f7}" -sf "${DMENU_SF:-#1e1e2e}" "$@"

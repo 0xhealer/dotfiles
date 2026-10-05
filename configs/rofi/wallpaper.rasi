@@ -1,0 +1,56 @@
+@import "~/.config/matugen/generated/rofi-colors.rasi"
+
+* {
+  background-color: transparent;
+  text-color:       @fg;
+  margin:  0;
+  padding: 0;
+  spacing: 0;
+}
+
+window {
+  location: center;
+  width: 1180px;
+  background-color: @bg;
+  border: 2px;
+  border-color: @accent;
+  border-radius: 12px;
+}
+
+mainbox {
+  padding: 14px;
+  children: [ inputbar, listview ];
+  spacing: 12px;
+}
+
+inputbar {
+  padding: 10px 14px;
+  spacing: 10px;
+  background-color: @bg-alt;
+  border-radius: 8px;
+  children: [ prompt, entry ];
+}
+
+prompt { text-color: @accent; }
+entry  { placeholder: "Search"; placeholder-color: @fg-dim; }
+
+listview {
+  columns: 3;
+  flow: horizontal;
+  lines: 3;
+  fixed-height: true;
+  fixed-columns: true;
+  scrollbar: false;
+  spacing: 12px;
+}
+
+element {
+  orientation: vertical;
+  padding: 10px;
+  spacing: 6px;
+  border-radius: 10px;
+}
+
+element selected.normal { background-color: @accent; text-color: @on-accent; }
+element-icon { size: 10.5em; horizontal-align: 0.5; }
+element-text { horizontal-align: 0.5; text-color: inherit; }

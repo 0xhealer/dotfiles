@@ -1,0 +1,12 @@
+# name|command|accelerator
+Terminal|kitty|<Super>Return
+Ghostty|ghostty|<Super><Shift>Return
+Browser|~/.local/bin/browser-open|<Super>b
+Files|sh -c "exec xdg-open \"$HOME\""|<Super>e
+Volume mixer|pavucontrol|<Super>s
+Clipboard history|copyq toggle|<Super><Shift>v
+Do not disturb|sh -c "if [ \"$(gsettings get org.gnome.desktop.notifications show-banners)\" = true ]; then gsettings set org.gnome.desktop.notifications show-banners false; else gsettings set org.gnome.desktop.notifications show-banners true; fi"|<Super>n
+Wallpaper picker|~/.local/bin/wallpaper-select|<Super>w
+Random wallpaper|~/.local/bin/wallpaper-set|<Super><Shift>w
+Wallpaper rotation|~/.local/bin/wallpaper-rotate toggle|<Super><Control>w
+Keybinding list|xdg-open https://github.com/0xhealer/dotfiles/blob/main/KEYBINDINGS.md|<Super><Shift>slash

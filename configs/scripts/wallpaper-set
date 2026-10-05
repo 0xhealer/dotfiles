@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
+log="$HOME/.cache/dotfiles-wallpaper.log"
+dir="$HOME/Pictures/Wallpapers"
+state="$HOME/.cache/dotfiles-wallpaper"
+mkdir -p "$(dirname "$state")" "$HOME/.config/matugen/generated"
+
+pick_random() {
+  local current
+  current="$(cat "$state" 2>/dev/null)"
+  find "$dir" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) |
+    grep -vxF "$current" | shuf -n1
+}
+
+restore=0
+case "${1:-}" in
+  --restore) restore=1; wall="$(cat "$state" 2>/dev/null)" ;;
+  "") wall="$(pick_random)" ;;
+  *) wall="$1" ;;
+esac
+
+if [[ -z "${wall:-}" || ! -f "$wall" ]]; then
+  restore=0
+  wall="$(pick_random)"
+fi
+[[ -n "$wall" && -f "$wall" ]] || { echo "no wallpaper found in $dir" >&2; exit 1; }
+
+printf '%s\n' "$wall" >"$state"
+case "${XDG_CURRENT_DESKTOP:-}" in
+  *GNOME*)
+    gsettings set org.gnome.desktop.background picture-uri "file://$wall"
+    gsettings set org.gnome.desktop.background picture-uri-dark "file://$wall"
+    ;;
+  *KDE*)
+    plasma-apply-wallpaperimage "$wall" >/dev/null 2>&1
+    ;;
+  *)
+    feh --no-fehbg --bg-fill "$wall"
+    ;;
+esac
+((restore)) && exit 0
+
+if command -v matugen >/dev/null 2>&1; then
+  if ! matugen image "$wall" -m dark --source-color-index 0 >"$log" 2>&1 &&
+    ! matugen image "$wall" -m dark >>"$log" 2>&1; then
+    notify-send -u critical "matugen failed" "see $log" 2>/dev/null
+  fi
+else
+  notify-send -u critical "matugen not found" "run install.sh matugen" 2>/dev/null
+fi
+
+pkill -USR1 -x kitty 2>/dev/null
+pkill -USR2 -x ghostty 2>/dev/null
+if pgrep -x dunst >/dev/null; then
+  pkill -x dunst
+  setsid -f dunst >/dev/null 2>&1
+fi
+if command -v gsettings >/dev/null 2>&1; then
+  gsettings set org.gnome.desktop.interface color-scheme prefer-dark 2>/dev/null
+  case "${XDG_CURRENT_DESKTOP:-}" in
+    *GNOME*) ;;
+    *)
+      gsettings set org.gnome.desktop.interface gtk-theme Adwaita 2>/dev/null
+      gsettings set org.gnome.desktop.interface gtk-theme Adwaita-dark 2>/dev/null
+      ;;
+  esac
+fi
+case "${XDG_CURRENT_DESKTOP:-}" in
+  *KDE*)
+    plasma-apply-colorscheme BreezeDark >/dev/null 2>&1
+    plasma-apply-colorscheme Matugen >/dev/null 2>&1
+    ;;
+esac
+i3-msg reload >/dev/null 2>&1
+exit 0

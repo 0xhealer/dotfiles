@@ -1,0 +1,326 @@
+palette = "catppuccin_mocha"
+
+# Line 1: time, user, host, dir, git branch, then EVERY language/toolchain
+# module Starship ships - each printing its official Nerd Font logo + full name + version.
+# Line 2: exit-status check/cross, then 癒 in place of the prompt char.
+format = """$time$username$hostname$directory$git_branch(using $nix_shell$c$cpp$golang$python$rust$nodejs${custom.lua_windows}${custom.lua_unix}$java$kotlin$scala$swift$php$ruby$perl$haskell$julia$zig$gradle$cobol$crystal$daml$dart$deno$dotnet$elixir$elm$erlang$fennel$fortran$gleam$mojo$nim$ocaml$odin$opa$purescript$raku$red$rlang$solidity$typst$vlang${custom.shell_sh_windows}${custom.shell_sh_unix}${custom.shell_ps1})$line_break$character"""
+
+[palettes.catppuccin_mocha]
+base = "#1e1e2e"
+mantle = "#181825"
+crust = "#11111b"
+surface0 = "#313244"
+surface1 = "#45475a"
+surface2 = "#585b70"
+overlay0 = "#6c7086"
+overlay1 = "#7f849c"
+overlay2 = "#9399b2"
+subtext0 = "#a6adc8"
+subtext1 = "#bac2de"
+text = "#cdd6f4"
+red = "#f38ba8"
+maroon = "#eba0ac"
+peach = "#fab387"
+yellow = "#f9e2af"
+green = "#a6e3a1"
+teal = "#94e2d5"
+sky = "#89dceb"
+sapphire = "#74c7ec"
+blue = "#89b4fa"
+mauve = "#cba6f7"
+lavender = "#b4befe"
+pink = "#f5c2e7"
+flamingo = "#f2cdcd"
+rosewater = "#f5e0dc"
+
+[time]
+disabled = false
+format = "[$time](bold subtext0) "
+time_format = "%R"
+
+[username]
+show_always = true
+format = "[$user](bold green) at "
+style_root = "bold red"
+
+[hostname]
+disabled = false
+format = "[$hostname](bold yellow) in "
+ssh_only = false
+
+[directory]
+style = "bold sky"
+truncation_length = 3
+truncate_to_repo = false
+format = "[$path]($style) "
+
+[git_branch]
+format = '[\($branch\)]($style) '
+style = "bold red"
+
+[character]
+success_symbol = '[](bold green) [癒](bold sapphire)'
+error_symbol = '[](bold red) [癒](bold sapphire)'
+
+# --- Toolchain/language modules: official Nerd Font logos, full names, versions ---
+[nix_shell]
+symbol = " "
+format = "[$symbol Nix $state ]($style)"
+style = "bold blue"
+
+[golang]
+symbol = " "
+format = "[$symbol Go $version ]($style)"
+style = "bold sky"
+
+[python]
+symbol = " "
+format = "[$symbol Python $version ]($style)"
+style = "bold yellow"
+
+[rust]
+symbol = "󱘗 "
+format = "[$symbol Rust $version ]($style)"
+style = "bold peach"
+
+[nodejs]
+symbol = " "
+format = "[$symbol Node.js $version ]($style)"
+style = "bold green"
+
+[custom.lua_windows]
+detect_extensions = ["lua"]
+os = "windows"
+symbol = " "
+format = "[$symbol Lua ]($style)"
+style = "bold blue"
+
+[custom.lua_unix]
+detect_extensions = ["lua"]
+os = "unix"
+command = "lua -e \"print(_VERSION:match('[%d%.]+'))\""
+symbol = " "
+format = "[$symbol Lua ]($style)([$output ]($style))"
+style = "bold blue"
+
+[java]
+symbol = " "
+format = "[$symbol Java $version ]($style)"
+style = "bold red"
+
+[kotlin]
+symbol = " "
+format = "[$symbol Kotlin $version ]($style)"
+style = "bold mauve"
+
+[scala]
+symbol = " "
+format = "[$symbol Scala $version ]($style)"
+style = "bold red"
+
+[swift]
+symbol = " "
+format = "[$symbol Swift $version ]($style)"
+style = "bold peach"
+
+[php]
+symbol = " "
+format = "[$symbol PHP $version ]($style)"
+style = "bold lavender"
+
+[ruby]
+symbol = " "
+format = "[$symbol Ruby $version ]($style)"
+style = "bold red"
+
+[perl]
+symbol = " "
+format = "[$symbol Perl $version ]($style)"
+style = "bold sky"
+
+[haskell]
+symbol = " "
+format = "[$symbol Haskell $version ]($style)"
+style = "bold mauve"
+
+[julia]
+symbol = " "
+format = "[$symbol Julia $version ]($style)"
+style = "bold green"
+
+[zig]
+symbol = " "
+format = "[$symbol Zig $version ]($style)"
+style = "bold yellow"
+
+[gradle]
+symbol = " "
+format = "[$symbol Gradle $version ]($style)"
+style = "bold sky"
+
+[c]
+symbol = " "
+format = "[$symbol C $version ]($style)"
+style = "bold sky"
+
+[cpp]
+symbol = " "
+format = "[$symbol C++ $version ]($style)"
+style = "bold blue"
+
+[cobol]
+symbol = " "
+format = "[$symbol COBOL $version ]($style)"
+style = "bold text"
+
+[crystal]
+symbol = " "
+format = "[$symbol Crystal $version ]($style)"
+style = "bold text"
+
+[daml]
+symbol = "Λ "
+format = "[$symbol Daml $version ]($style)"
+style = "bold peach"
+
+[dart]
+symbol = " "
+format = "[$symbol Dart $version ]($style)"
+style = "bold sky"
+
+[deno]
+symbol = " "
+format = "[$symbol Deno $version ]($style)"
+style = "bold text"
+
+[dotnet]
+symbol = " "
+format = "[$symbol .NET $version ]($style)"
+style = "bold mauve"
+
+[elixir]
+symbol = " "
+format = "[$symbol Elixir $version ]($style)"
+style = "bold mauve"
+
+[elm]
+symbol = " "
+format = "[$symbol Elm $version ]($style)"
+style = "bold sky"
+
+[erlang]
+symbol = " "
+format = "[$symbol Erlang $version ]($style)"
+style = "bold red"
+
+[fennel]
+symbol = " "
+format = "[$symbol Fennel $version ]($style)"
+style = "bold yellow"
+
+[fortran]
+symbol = " "
+format = "[$symbol Fortran $version ]($style)"
+style = "bold peach"
+
+[gleam]
+symbol = " "
+format = "[$symbol Gleam $version ]($style)"
+style = "bold sapphire"
+
+[mojo]
+symbol = "󰈸 "
+format = "[$symbol Mojo $version ]($style)"
+style = "bold peach"
+
+[nim]
+symbol = " "
+format = "[$symbol Nim $version ]($style)"
+style = "bold yellow"
+
+[ocaml]
+symbol = " "
+format = "[$symbol OCaml $version ]($style)"
+style = "bold peach"
+
+[odin]
+symbol = "󰟢 "
+format = "[$symbol Odin $version ]($style)"
+style = "bold sky"
+
+[opa]
+symbol = " "
+format = "[$symbol OPA $version ]($style)"
+style = "bold text"
+
+[purescript]
+symbol = " "
+format = "[$symbol PureScript $version ]($style)"
+style = "bold text"
+
+[raku]
+symbol = "󱖊 "
+format = "[$symbol Raku $version ]($style)"
+style = "bold yellow"
+
+[red]
+symbol = "󱍼 "
+format = "[$symbol Red $version ]($style)"
+style = "bold red"
+
+[rlang]
+symbol = "󰟔 "
+format = "[$symbol R $version ]($style)"
+style = "bold blue"
+
+[solidity]
+symbol = " "
+format = "[$symbol Solidity $version ]($style)"
+style = "bold text"
+
+[typst]
+symbol = " "
+format = "[$symbol Typst $version ]($style)"
+style = "bold text"
+
+[vlang]
+symbol = " "
+format = "[$symbol V $version ]($style)"
+style = "bold sky"
+
+[custom.shell_sh_windows]
+detect_extensions = ["sh"]
+os = "windows"
+symbol = " "
+format = "[$symbol Bash ]($style)"
+style = "bold green"
+
+[custom.shell_sh_unix]
+detect_extensions = ["sh"]
+os = "unix"
+command = "bash --version | head -n1 | grep -oE '[0-9]+\\.[0-9]+\\.[0-9]+' | head -n1"
+shell = ["bash", "--norc"]
+symbol = " "
+format = "([$symbol Bash $output ]($style))"
+style = "bold green"
+
+# Actually verified against a real pwsh binary this time (installed one
+# and traced it), not just a Linux fallback path. Two real bugs, now both
+# fixed:
+# 1. `command` was a second full "pwsh -NoProfile -Command ..." wrapped
+#    inside the shell that's already pwsh - redundant nesting.
+# 2. The real killer: when `shell` has explicit args, Starship does NOT
+#    append the "-" pwsh needs after -Command to tell it "read the
+#    command from stdin". Without it, pwsh hard-errors immediately with
+#    "A command must follow -Command" before ever seeing our command -
+#    confirmed via STARSHIP_LOG=trace, this is what "no logo" actually
+#    was. Fix: put "-" in `shell` explicitly, matching the pattern
+#    Starship's own test suite uses for this exact case.
+[custom.shell_ps1]
+detect_extensions = ["ps1"]
+command = "$PSVersionTable.PSVersion.ToString()"
+shell = ["pwsh", "-NoProfile", "-Command", "-"]
+ignore_timeout = true
+symbol = "󰨊 "
+format = "([$symbol PowerShell $output ]($style))"
+style = "bold blue"

@@ -1,0 +1,28 @@
+# Normalize line endings: LF in the repo, matching .editorconfig
+* text=auto eol=lf
+
+# Scripts: keep shell/PowerShell LF (a CRLF shebang breaks the Linux installer); Windows launchers need CRLF
+*.sh  text eol=lf
+*.ps1 text eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.7z binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+
+# Keep generated/vendored files out of language stats and diffs
+*.lock linguist-generated=true -diff
+package-lock.json linguist-generated=true -diff

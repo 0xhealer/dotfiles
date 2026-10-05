@@ -1,0 +1,9 @@
+{
+  "close_on_focus_loss": true,
+  "launcher_window": {
+    "opacity": 0.85,
+    "blur": {
+      "enabled": true
+    }
+  }
+}
