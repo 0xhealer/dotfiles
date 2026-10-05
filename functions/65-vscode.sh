@@ -5,7 +5,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/../helper/helper.sh"
 require_user
 detect_platform
 
-log_step "Visual Studio Code"
+log_step "Visual Studio Code ($DOTS_CODE_BIN)"
 
 install_vscode_deb() {
   local tmp
@@ -29,25 +29,25 @@ autorefresh=1
 type=rpm-md
 gpgcheck=1
 gpgkey=https://packages.microsoft.com/keys/microsoft.asc"
-  sudo_run dnf install -y code
+  sudo_run dnf install -y "$DOTS_CODE_BIN"
 }
 
-if ! has code; then
+if ! has "$DOTS_CODE_BIN"; then
   case "$DOTS_FAMILY" in
     debian) install_vscode_deb ;;
     fedora) install_vscode_rpm ;;
-    arch) log_warn "VS Code comes from the AUR (visual-studio-code-bin) in packages/cachyos.txt" ;;
+    arch) log_warn "VS Code comes from the AUR (visual-studio-code-insiders-bin) in packages/cachyos.txt" ;;
   esac
 fi
 
-user_dir="$HOME/.config/Code/User"
+user_dir="$HOME/.config/$DOTS_CODE_DIR/User"
 link_config "$DOTS_ROOT/configs/vscode/settings.json" "$user_dir/settings.json"
 link_config "$DOTS_ROOT/configs/vscode/keybindings.json" "$user_dir/keybindings.json"
 
-if has code; then
+if has "$DOTS_CODE_BIN"; then
   while IFS= read -r ext; do
-    run code --install-extension "$ext" --force >/dev/null || log_warn "extension failed: $ext"
+    run "$DOTS_CODE_BIN" --install-extension "$ext" --force >/dev/null || log_warn "extension failed: $ext"
   done < <(pkg_list "$DOTS_ROOT/packages/vscode-extensions.txt")
 else
-  log_warn "code not found, extensions not installed"
+  log_warn "$DOTS_CODE_BIN not found, extensions not installed"
 fi

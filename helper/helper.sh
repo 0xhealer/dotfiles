@@ -82,6 +82,12 @@ detect_platform() {
   DOTS_OS_VERSION_ID="$ver"
   DOTS_PKG_FILE="$DOTS_ROOT/packages/$DOTS_DISTRO.txt"
   DOTS_ARCH="$(uname -m)"
+  if [[ "$DOTS_WM" == niri ]]; then
+    DOTS_CODE_BIN=code-insiders DOTS_CODE_DIR="Code - Insiders" DOTS_CODE_EXT=.vscode-insiders
+  else
+    DOTS_CODE_BIN=code DOTS_CODE_DIR=Code DOTS_CODE_EXT=.vscode
+  fi
+  export DOTS_CODE_BIN DOTS_CODE_DIR DOTS_CODE_EXT
   export DOTS_DISTRO DOTS_FAMILY DOTS_WM DOTS_EXTRA_DE DOTS_OS_ID DOTS_OS_VERSION_ID DOTS_PKG_FILE DOTS_ARCH
 }
 

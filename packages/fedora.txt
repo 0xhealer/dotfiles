@@ -53,7 +53,12 @@ vicinae
 brightnessctl
 playerctl
 pavucontrol
-thunar
+dolphin
+kio-extras
+ffmpegthumbs
+kf6-kimageformats
+breeze-icon-theme
+vlc
 copyq
 os-prober
 fontconfig

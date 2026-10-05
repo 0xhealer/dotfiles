@@ -59,14 +59,44 @@ setup_noctalia_theming() {
     gsettings set org.gnome.desktop.interface gtk-theme adw-gtk3-dark 2>/dev/null || true
   fi
   # VS Code: the community template fills this extension with the generated colours
-  local ext="$HOME/.vscode/extensions/noctalia.noctaliatheme-0.0.5"
+  local ext="$HOME/$DOTS_CODE_EXT/extensions/noctalia.noctaliatheme-0.0.5"
   run mkdir -p "$ext/themes"
   is_dry || printf '%s\n' '{ "name": "noctaliatheme", "displayName": "Noctalia", "publisher": "noctalia", "version": "0.0.5", "engines": { "vscode": "^1.80.0" }, "categories": ["Themes"], "contributes": { "themes": [ { "label": "NoctaliaTheme", "uiTheme": "vs-dark", "path": "./themes/NoctaliaTheme-color-theme.json" } ] } }' >"$ext/package.json"
-  local vs="$HOME/.config/Code/User/settings.json"
+  local vs="$HOME/.config/$DOTS_CODE_DIR/User/settings.json"
   if [[ -f "$vs" ]] && ! is_dry; then
     sed -i 's/"workbench\.colorTheme": *"[^"]*"/"workbench.colorTheme": "NoctaliaTheme"/' "$vs"
   fi
   log_info "colours follow the wallpaper; after the first login run: noctalia msg theme"
+}
+
+setup_default_apps() {
+  local prefix=""
+  if [[ -f /etc/xdg/menus/arch-applications.menu ]]; then
+    prefix=arch-
+  elif [[ -f /etc/xdg/menus/plasma-applications.menu ]]; then
+    prefix=plasma-
+  fi
+  run mkdir -p "$HOME/.config/environment.d"
+  if ! is_dry; then
+    {
+      printf 'TERMINAL=ghostty\n'
+      [[ -n "$prefix" ]] && printf 'XDG_MENU_PREFIX=%s\n' "$prefix"
+    } >"$HOME/.config/environment.d/91-dotfiles-defaults.conf"
+    printf 'com.mitchellh.ghostty.desktop\n' >"$HOME/.config/xdg-terminals.list"
+  fi
+  # Dolphin needs a menu file to know the installed apps (Open With, default apps)
+  if [[ -n "$prefix" ]] && has kbuildsycoca6; then
+    run env XDG_MENU_PREFIX="$prefix" kbuildsycoca6 --noincremental
+  fi
+  if has xdg-mime; then
+    run xdg-mime default org.kde.dolphin.desktop inode/directory
+    run xdg-mime default com.mitchellh.ghostty.desktop x-scheme-handler/terminal
+  fi
+  if has kwriteconfig6; then
+    run kwriteconfig6 --file kdeglobals --group General --key TerminalApplication ghostty
+    run kwriteconfig6 --file kdeglobals --group General --key TerminalService com.mitchellh.ghostty.desktop
+  fi
+  log_info "defaults: Dolphin for folders, ghostty for terminals"
 }
 
 setup_niri() {
@@ -108,6 +138,7 @@ setup_niri() {
   fi
 
   setup_noctalia_theming
+  setup_default_apps
 
   local vs="$HOME/.config/vicinae/settings.json"
   if [[ -f "$vs" ]]; then

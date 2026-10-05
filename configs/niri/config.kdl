@@ -39,6 +39,20 @@ layout {
     }
 }
 
+// eDP-1 is the main screen (focused at startup); the TV sits to its right
+output "eDP-1" {
+    mode "1920x1080@120.000"
+    scale 1.05
+    position x=0 y=0
+    focus-at-startup
+}
+
+output "HDMI-A-1" {
+    mode "1920x1080@60.000"
+    scale 1
+    position x=1829 y=0
+}
+
 prefer-no-csd
 
 screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
@@ -59,10 +73,10 @@ window-rule {
     draw-border-with-background false
 }
 
-// VS Code is Electron and cannot be transparent itself, so niri makes the window translucent
+// every window is translucent over the blurred wallpaper; ghostty and kitty already set their own 0.85 background opacity
 window-rule {
-    match app-id="^[Cc]ode(-oss)?$"
-    opacity 0.88
+    exclude app-id=r#"^(com\.mitchellh\.ghostty|kitty)$"#
+    opacity 0.85
 }
 
 // @BLUR@
@@ -70,10 +84,10 @@ window-rule {
 binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
 
-    Mod+Return       { spawn "kitty"; }
-    Mod+Shift+Return { spawn "ghostty"; }
+    Mod+Return       { spawn "ghostty"; }
+    Mod+Shift+Return { spawn "kitty"; }
     Mod+B { spawn "sh" "-c" "for b in helium-browser helium helium-bin; do command -v \"$b\" >/dev/null && exec \"$b\"; done; exec xdg-open about:blank"; }
-    Mod+E { spawn "thunar"; }
+    Mod+E { spawn "dolphin"; }
     Mod+Space       { spawn "sh" "-c" "if command -v vicinae >/dev/null; then exec vicinae toggle; else exec noctalia msg panel-toggle launcher; fi"; }
     Mod+D           { spawn "sh" "-c" "if command -v vicinae >/dev/null; then exec vicinae toggle; else exec noctalia msg panel-toggle launcher; fi"; }
     Mod+Shift+D     { spawn "noctalia" "msg" "panel-toggle" "launcher"; }

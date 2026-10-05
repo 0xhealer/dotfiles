@@ -45,7 +45,15 @@ gnome-keyring
 brightnessctl
 playerctl
 pavucontrol
-thunar
+dolphin
+kio-extras
+kio-admin
+ffmpegthumbs
+kimageformats
+breeze-icons
+archlinux-xdg-menu
+vlc
+vlc-plugins-all
 copyq
 os-prober
 fontconfig
@@ -56,6 +64,6 @@ htop
 noctalia
 quickshell
 aur:vicinae-bin
-aur:visual-studio-code-bin
+aur:visual-studio-code-insiders-bin
 adw-gtk-theme
 qt6ct
