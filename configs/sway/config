@@ -1,0 +1,153 @@
+set $mod Mod4
+set $term kitty
+set $alt_term ghostty
+set $browser sh -c 'for b in helium-browser helium helium-bin; do command -v "$b" >/dev/null && exec "$b"; done; exec xdg-open about:blank'
+set $files thunar
+set $noctalia sh -c 'exec "$HOME/.local/bin/noctalia"'
+
+font pango:JetBrainsMono NF 10
+
+include ~/.config/sway/noctalia
+
+floating_modifier $mod normal
+focus_follows_mouse no
+default_border pixel 2
+default_floating_border pixel 2
+hide_edge_borders smart
+workspace_auto_back_and_forth yes
+
+gaps inner 8
+gaps outer 0
+smart_gaps on
+
+input type:touchpad {
+    tap enabled
+    dwt enabled
+}
+
+bindsym $mod+Return exec $term
+bindsym $mod+Shift+Return exec $alt_term
+bindsym $mod+b exec $browser
+bindsym $mod+e exec $files
+bindsym $mod+space exec noctalia msg panel-toggle launcher
+bindsym $mod+d exec noctalia msg panel-toggle launcher
+bindsym $mod+Shift+d exec noctalia msg panel-toggle launcher
+bindsym $mod+s exec noctalia msg panel-toggle control-center
+bindsym $mod+Shift+v exec noctalia msg panel-toggle clipboard
+bindsym $mod+n exec noctalia msg notification-dnd-toggle
+bindsym $mod+Shift+slash exec ~/.local/bin/keyhelp
+
+bindsym $mod+q kill
+bindsym $mod+f fullscreen toggle
+bindsym $mod+m fullscreen toggle
+bindsym $mod+v floating toggle
+bindsym $mod+c move position center
+bindsym $mod+Tab exec noctalia msg window-switcher
+bindsym $mod+o exec noctalia msg window-switcher
+
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+bindsym $mod+Left  focus left
+bindsym $mod+Down  focus down
+bindsym $mod+Up    focus up
+bindsym $mod+Right focus right
+
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+bindsym $mod+Shift+Left  move left
+bindsym $mod+Shift+Down  move down
+bindsym $mod+Shift+Up    move up
+bindsym $mod+Shift+Right move right
+
+bindsym $mod+Ctrl+Left  focus output left
+bindsym $mod+Ctrl+Right focus output right
+bindsym $mod+Ctrl+Shift+Left  move workspace to output left
+bindsym $mod+Ctrl+Shift+Right move workspace to output right
+
+bindsym $mod+comma focus parent
+bindsym $mod+period focus child
+
+bindsym $mod+t layout tabbed
+bindsym $mod+Shift+t layout toggle split
+bindsym $mod+Ctrl+s layout stacking
+bindsym $mod+Ctrl+h splith
+bindsym $mod+Ctrl+v splitv
+
+mode "resize" {
+    bindsym h resize shrink width 10 px or 10 ppt
+    bindsym j resize grow height 10 px or 10 ppt
+    bindsym k resize shrink height 10 px or 10 ppt
+    bindsym l resize grow width 10 px or 10 ppt
+    bindsym Left  resize shrink width 10 px or 10 ppt
+    bindsym Down  resize grow height 10 px or 10 ppt
+    bindsym Up    resize shrink height 10 px or 10 ppt
+    bindsym Right resize grow width 10 px or 10 ppt
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+r mode "default"
+}
+bindsym $mod+r mode "resize"
+bindsym $mod+minus resize shrink width 5 ppt
+bindsym $mod+equal resize grow width 5 ppt
+
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace number 9
+bindsym $mod+Next workspace next
+bindsym $mod+Prior workspace prev
+bindsym $mod+Shift+Next move container to workspace next
+bindsym $mod+Shift+Prior move container to workspace prev
+
+bindsym $mod+Mod1+l exec noctalia msg session lock
+bindsym $mod+Shift+e exec noctalia msg panel-toggle session
+bindsym $mod+Shift+r reload
+bindsym $mod+Shift+p exec sh -c 'sleep 0.5; swaymsg "output * power off"'
+
+bindsym $mod+w exec noctalia msg panel-toggle wallpaper
+bindsym $mod+Shift+w exec noctalia msg wallpaper-random
+bindsym $mod+Ctrl+w exec ~/.local/bin/wallpaper-rotate toggle
+
+bindsym --locked XF86AudioRaiseVolume exec wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+
+bindsym --locked XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+bindsym --locked XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+bindsym --locked XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+bindsym --locked XF86MonBrightnessUp exec brightnessctl --class=backlight set +5%
+bindsym --locked XF86MonBrightnessDown exec brightnessctl --class=backlight set 5%-
+bindsym --locked XF86AudioPlay exec playerctl play-pause
+bindsym --locked XF86AudioNext exec playerctl next
+bindsym --locked XF86AudioPrev exec playerctl previous
+
+bindsym Print exec sh -c 'grim -g "$(slurp)" - | wl-copy -t image/png'
+bindsym Ctrl+Print exec sh -c 'mkdir -p ~/Pictures/Screenshots && grim ~/Pictures/Screenshots/$(date +%Y%m%d-%H%M%S).png'
+bindsym Alt+Print exec sh -c 'grim -g "$(swaymsg -t get_tree | jq -r ".. | select(.focused?) | .rect | \"\(.x),\(.y) \(.width)x\(.height)\"")" - | wl-copy -t image/png'
+bindsym $mod+Shift+s exec sh -c 'grim -g "$(slurp)" - | wl-copy -t image/png'
+
+for_window [app_id="pavucontrol"] floating enable
+for_window [app_id="nm-connection-editor"] floating enable
+for_window [app_id="arandr"] floating enable
+for_window [app_id="org.kde.polkit-kde-authentication-agent-1"] floating enable
+
+exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP SWAYSOCK
+exec $noctalia
+exec sh -c 'command -v vmware-user-suid-wrapper >/dev/null 2>&1 && exec vmware-user-suid-wrapper'
+exec sh -c 'command -v spice-vdagent >/dev/null 2>&1 && exec spice-vdagent'
+exec ~/.local/bin/wallpaper-rotate

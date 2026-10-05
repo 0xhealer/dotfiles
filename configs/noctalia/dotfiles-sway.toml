@@ -1,0 +1,26 @@
+[shell.panel]
+transparency_mode = "glass"
+
+[bar.default]
+background_opacity = 0.85
+
+[wallpaper]
+directory = "~/Pictures/Wallpapers"
+
+[widget.clock]
+format = "{:%H:%M %a, %b %d}"
+
+[theme]
+mode = "dark"
+source = "wallpaper"
+wallpaper_scheme = "m3-tonal-spot"
+
+# Only sway is themed by Noctalia here; every other app keeps following matugen, which the hook below feeds
+# with the current wallpaper so i3 and sway share one colour pipeline.
+[theme.templates]
+enable_builtin_templates = true
+builtin_ids = ["sway"]
+enable_community_templates = false
+
+[hooks]
+wallpaper_changed = "sh -c 'exec \"$HOME/.local/bin/wallpaper-set\" \"$NOCTALIA_WALLPAPER_PATH\"'"
