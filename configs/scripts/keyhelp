@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-conf="${XDG_CONFIG_HOME:-$HOME/.config}/i3/config"
+wm=i3
+[[ -n "${SWAYSOCK:-}" ]] && wm=sway
+conf="${XDG_CONFIG_HOME:-$HOME/.config}/$wm/config"
 # shellcheck disable=SC2016
 filter='s/^[[:space:]]*bindsym[[:space:]]+//; s/--no-startup-id //; s/\$mod/Super/g; s/exec //'
 grep -E '^[[:space:]]*bindsym' "$conf" | sed -E "$filter" |

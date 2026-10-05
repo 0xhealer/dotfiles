@@ -34,6 +34,7 @@ case "${XDG_CURRENT_DESKTOP:-}" in
   *KDE*)
     plasma-apply-wallpaperimage "$wall" >/dev/null 2>&1
     ;;
+  *sway*) ;;
   *)
     feh --no-fehbg --bg-fill "$wall"
     ;;
