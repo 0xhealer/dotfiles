@@ -4,12 +4,24 @@ Rectangle {
     id: root
     width: 1280
     height: 720
-    color: "#1e1e2e"
+    color: "#141318"
 
-    property color accent: "#cba6f7"
-    property color surface: "#d91e1e2e"
-    property color text: "#cdd6f4"
+    property color accent: "#c9beff"
+    property color surface: "#d9141318"
+    property color text: "#e6e1e9"
     property int sessionIndex: sessionModel.lastIndex
+    property var hidden: ({})
+
+    function stepSession(dir) {
+        var n = sessionModel.count
+        var i = root.sessionIndex
+        for (var k = 0; k < n; k++) {
+            i = (i + dir + n) % n
+            if (root.hidden[i] !== true)
+                break
+        }
+        root.sessionIndex = i
+    }
 
     Image {
         anchors.fill: parent
@@ -73,7 +85,7 @@ Rectangle {
                     Text {
                         anchors.fill: parent
                         verticalAlignment: Text.AlignVCenter
-                        color: "#99cdd6f4"
+                        color: "#99e6e1e9"
                         font.pixelSize: 16
                         text: "Username"
                         visible: !parent.text
@@ -104,7 +116,7 @@ Rectangle {
                     Text {
                         anchors.fill: parent
                         verticalAlignment: Text.AlignVCenter
-                        color: "#99cdd6f4"
+                        color: "#99e6e1e9"
                         font.pixelSize: 16
                         text: "Password"
                         visible: !parent.text
@@ -116,37 +128,75 @@ Rectangle {
                 id: message
                 width: parent.width
                 horizontalAlignment: Text.AlignHCenter
-                color: "#f38ba8"
+                color: "#ffb4ab"
                 font.pixelSize: 13
                 text: ""
             }
 
             Row {
-                spacing: 8
+                spacing: 10
                 anchors.horizontalCenter: parent.horizontalCenter
-                Repeater {
-                    model: sessionModel
-                    onItemAdded: {
-                        if (index === root.sessionIndex && !item.visible)
-                            root.sessionIndex = (index + 1) % sessionModel.count
+
+                Rectangle {
+                    width: 30
+                    height: 30
+                    radius: 15
+                    color: "#33ffffff"
+                    Text {
+                        anchors.centerIn: parent
+                        font.pixelSize: 18
+                        color: root.text
+                        text: "\u2039"
                     }
-                    Rectangle {
-                        height: 30
-                        width: label.width + 24
-                        radius: 15
-                        visible: model.name.indexOf("debug") < 0
-                        color: index === root.sessionIndex ? root.accent : "#33ffffff"
-                        Text {
-                            id: label
-                            anchors.centerIn: parent
-                            font.pixelSize: 13
-                            color: index === root.sessionIndex ? "#1e1e2e" : root.text
-                            text: model.name
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: root.stepSession(-1)
+                    }
+                }
+
+                Item {
+                    width: 200
+                    height: 30
+                    Repeater {
+                        model: sessionModel
+                        onItemAdded: {
+                            root.hidden[index] = item.sname.indexOf("debug") >= 0
+                            if (index === root.sessionIndex && root.hidden[index])
+                                root.stepSession(1)
                         }
-                        MouseArea {
+                        Rectangle {
+                            property string sname: model.name
                             anchors.fill: parent
-                            onClicked: root.sessionIndex = index
+                            radius: 15
+                            visible: index === root.sessionIndex
+                            color: root.accent
+                            Text {
+                                anchors.centerIn: parent
+                                width: parent.width - 20
+                                horizontalAlignment: Text.AlignHCenter
+                                elide: Text.ElideRight
+                                font.pixelSize: 13
+                                color: "#31285f"
+                                text: model.name
+                            }
                         }
+                    }
+                }
+
+                Rectangle {
+                    width: 30
+                    height: 30
+                    radius: 15
+                    color: "#33ffffff"
+                    Text {
+                        anchors.centerIn: parent
+                        font.pixelSize: 18
+                        color: root.text
+                        text: "\u203a"
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: root.stepSession(1)
                     }
                 }
             }
