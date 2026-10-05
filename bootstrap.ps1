@@ -1,4 +1,3 @@
-[CmdletBinding()]
 param(
     [string[]]$Modules,
     [string[]]$Skip,
@@ -15,7 +14,11 @@ $repo = if ($env:DOTS_REPO) { $env:DOTS_REPO } else { '0xhealer/dotfiles' }
 $branch = if ($env:DOTS_BRANCH) { $env:DOTS_BRANCH } else { 'main' }
 $dest = if ($env:DOTS_DIR) { $env:DOTS_DIR } else { Join-Path $HOME 'dotfiles' }
 
-try { Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force } catch { }
+try { Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force -ErrorAction Stop } catch { }
+$policy = Get-ExecutionPolicy -List | Where-Object { $_.Scope -in 'MachinePolicy', 'UserPolicy' -and $_.ExecutionPolicy -ne 'Undefined' }
+if ($policy) {
+    Write-Warning 'Execution policy is enforced by Group Policy; the installer may be blocked. Ask your administrator or use a machine you control.'
+}
 
 if (Get-Command git -ErrorAction SilentlyContinue) {
     if (Test-Path (Join-Path $dest '.git')) {
@@ -48,5 +51,8 @@ if ($List) { $installArgs += '-List' }
 if ($DryRun) { $installArgs += '-DryRun' }
 if ($NoElevate) { $installArgs += '-NoElevate' }
 
-Write-Host "==> running install.cmd $($installArgs -join ' ')"
-& (Join-Path $dest 'install.cmd') @installArgs
+$shell = (Get-Command pwsh -ErrorAction SilentlyContinue).Source
+if (-not $shell) { $shell = (Get-Command powershell).Source }
+
+Write-Host "==> running install.ps1 $($installArgs -join ' ')"
+& $shell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $dest 'install.ps1') @installArgs
