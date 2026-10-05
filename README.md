@@ -12,9 +12,28 @@ Public, portable edition of my dotfiles and modular installer for Windows and Li
 
 GRUB is configured on Linux when `/etc/default/grub` exists. Terminals, polybar, rofi and dunst use 0.85 opacity; blur comes from picom (i3), niri 26.04+ (niri) and Windows Terminal acrylic.
 
+## Quick install
+
+One command, no clone needed. It fetches this repo into `~/dotfiles` (using `git`, or a tarball/zip when git is missing) and runs the installer.
+
+Linux:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/0xhealer/dotfiles/main/bootstrap.sh | bash
+```
+
+Windows (PowerShell):
+
+```powershell
+irm https://raw.githubusercontent.com/0xhealer/dotfiles/main/bootstrap.ps1 | iex
+```
+
+Pass installer options after `-s --` on Linux (`... | bash -s -- --dry-run shell starship`) or by running the script as a block on Windows (`& ([scriptblock]::Create((irm https://raw.githubusercontent.com/0xhealer/dotfiles/main/bootstrap.ps1))) -DryRun`). Set `DOTS_DIR` to install somewhere other than `~/dotfiles`.
+
 ## Layout
 
 ```
+bootstrap.sh / .ps1        one-command installers
 install.sh / install.ps1   entry points
 helper/                    helper.sh, helper.ps1
 functions/                 numbered Linux steps (bash)
@@ -72,27 +91,3 @@ Everything is copied, so re-run the module after editing a config in the repo.
 `ghcreate [name] [-p] [-d description]` creates a private repo (public with `-p`). With a name it makes `~/workspace/github/<name>` with a first commit and pushes it; without one it publishes the current git repo.
 
 Both exist in zsh, bash (`~/.config/shell/gh.sh`), fish and PowerShell. Run `gh auth login` once first.
-
-## Notes
-
-- Keybindings are identical across distros, see [KEYBINDINGS.md](KEYBINDINGS.md).
-- Polybar (i3): wallpaper picker button, workspaces, window title, clock, VPN address, brightness, notification toggle, volume, CPU, RAM, disk, Wi-Fi (SSID, signal, speeds, IP), ethernet, battery with percentage and time, tray, power menu. Modules for missing hardware (Wi-Fi, battery) are left out automatically.
-
-- Fonts: JetBrainsMono Nerd Font (primary) and Hack Nerd Font (fallback) everywhere, both SIL OFL, in `assets/fonts`. Theme: Catppuccin Mocha for Starship, Windows Terminal, VS Code, Neovim, dunst, dmenu, SDDM and the static fallback colours of every matugen-driven app.
-- niri distros: Noctalia generates Material You colors from the wallpaper (`[theme] source = "wallpaper"` in `configs/noctalia/dotfiles.toml`) and renders them into niri (focus ring, borders), kitty, ghostty, GTK 3/4 (adw-gtk3), Qt (qt6ct), KColorScheme, btop, cava and the community templates for Vicinae, VS Code (`NoctaliaTheme`), Yazi, lazygit, Zathura, Obsidian, Discord, Telegram, Steam and Zen. Run `noctalia msg theme` to re-render; `Super+Shift+w` picks a new wallpaper and recolors everything. niri needs 3D acceleration in VMware (VM Settings > Display > Accelerate 3D graphics).
-- i3 distros: matugen builds colors from the wallpaper into `~/.config/matugen/generated`, read by i3, polybar, rofi, kitty, ghostty, dunst and dmenu, and written straight into GTK 3/4, Qt (qt5ct/qt6ct), btop, fzf and a generated VS Code theme (`Matugen`; run `Developer: Reload Window` after a change). Starship, Neovim and the browser keep their own colors. Polybar logs to `~/.cache/polybar.log`. Polybar and matugen exist only in the i3 session: pick i3 on the login screen. `Super+w` opens waypaper (rofi grid fallback), `Super+Shift+w` picks a random one.
-- `~/workspace/github` is created on every machine (where `ghclone` and `ghcreate` put repos). Kali also gets a flat `~/tools` from the `pentest-tools` step: tools from the Kali repos (`packages/kali-pentest.txt`) and PyPI (frida-tools, objection, apkleaks via pipx) install the normal way, and the GitHub tools (jwt_tool with its own venv and launcher, PEASS-ng, firmwalker, PayloadsAllTheThings) are cloned into `~/tools`. MobSF runs in Docker through the `mobsf` alias (web UI on port 8000, data in `~/.MobSF`). Packages missing from your repos are skipped with a warning.
-- The `vm-tools` step installs the guest tools only when it runs inside a VM (open-vm-tools for VMware, spice-vdagent, VirtualBox additions), so the display follows the window size; i3 starts the matching helper at login.
-- Ubuntu keeps GNOME and adds i3; Kali adds KDE Plasma (`kali-desktop-kde`) next to i3. The `display-manager` step switches both to SDDM from the next boot, because it lists Wayland sessions (GNOME, Plasma) and X11 sessions (i3) together; GDM on Ubuntu 26.04 hides i3 and LightDM hides the Wayland sessions. Skip it with `--skip display-manager`. The `desktop` step applies the shared keymap to GNOME (gsettings) and KDE (kglobalshortcutsrc); directional focus keys, split keys and the polybar are i3 only.
-- niri distros: Noctalia v5 themes itself from the wallpaper. wallpaperCarousel is a Noctalia plugin (it cannot run on i3), toggled with `Super+W`.
-- niri: `// @BLUR@` in `configs/niri/config.kdl` is replaced by `blur.kdl` only when `niri --version` is 26.04 or newer and `niri validate` accepts it.
-- Noctalia: `configs/noctalia/dotfiles.toml` is copied into `~/.config/noctalia/` and checked with `noctalia config validate`.
-- Vicinae: `configs/vicinae/settings.json` is only installed if no settings file exists. Check key names with `vicinae config default`.
-- Session banner: every zsh, fish and PowerShell terminal prints a one-line `─ icon host · kernel · ip · wm · shell ─` header in the ButterZsh style. `ff` still runs the full fastfetch.
-- Aliases and functions: `configs/zsh/` (`aliases`, `keybinds`, `header`, `fzf`, `zoxide`, `functions/`) and `configs/fish/conf.d/` (`aliases`, `functions`, `keybinds`, `header`) mirror `configs/powershell/powershell/aliases.ps1` and `functions/`. Package helpers (`update`, `upgrade`, `uplist`, `search`, `pinstall`, `remove`) pick apt, dnf, yay or pacman.
-- Git identity lives in `~/.gitconfig.local`.
-
-## Spotify and Spicetify
-
-Linux only, Windows gets neither. The `spotify` step installs Spotify (Spotify's apt repo on Ubuntu and Kali, the AUR on CachyOS, the Flathub user flatpak on Fedora) and Spicetify with the Sleek theme in its Catppuccin colour scheme. Spicetify can only patch Spotify after it has run once, so open Spotify, log in, then run `spicetify backup apply`. After a Spotify update, run `spicetify restore backup apply`.
-
