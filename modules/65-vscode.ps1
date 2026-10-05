@@ -12,9 +12,10 @@ $extensions = @(Get-PackageList -Path (Get-RepoPath 'packages/vscode-extensions.
 if (Test-DryRun) {
     foreach ($ext in $extensions) { Write-Host "    [dry-run] code --install-extension $ext" }
 } elseif (Test-Command 'code') {
+    $env:NODE_NO_WARNINGS = '1'
     foreach ($ext in $extensions) {
-        & code --install-extension $ext --force *> $null
-        if ($LASTEXITCODE -ne 0) { Write-Warn "extension failed: $ext" }
+        $code = Invoke-Native { & code --install-extension $ext --force }
+        if ($code -ne 0) { Write-Warn "extension failed: $ext" }
     }
 } else {
     Write-Warn 'code not on PATH yet; restart the terminal and run: .\install.ps1 -Modules vscode'

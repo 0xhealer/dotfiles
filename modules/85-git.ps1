@@ -26,6 +26,6 @@ if (-not (Test-DryRun) -and (Test-Command 'git')) {
 }
 
 if (-not (Test-DryRun) -and (Test-Command 'gh')) {
-    & gh auth status *> $null
-    if ($LASTEXITCODE -ne 0) { Write-Info "run 'gh auth login' once; ghclone and ghcreate use it" }
+    $ghCode = Invoke-Native { & gh auth status }
+    if ($ghCode -ne 0) { Write-Info "run 'gh auth login' once; ghclone and ghcreate use it" }
 }
