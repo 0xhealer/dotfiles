@@ -81,3 +81,18 @@ htop
 # KDE desktop
 kali-desktop-kde
 dconf-cli
+avrdude
+gcc-avr
+avr-libc
+binutils-avr
+esptool
+picocom
+minicom
+dfu-util
+openocd
+stlink-tools
+sigrok-cli
+pulseview
+kicad
+adb
+fastboot

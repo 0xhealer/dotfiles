@@ -61,14 +61,27 @@ function Invoke-Native {
     param([Parameter(Mandatory)][scriptblock]$Script)
     $previous = $ErrorActionPreference
     $ErrorActionPreference = 'Continue'
-    try { $null = & $Script 2>&1 } finally { $ErrorActionPreference = $previous }
+    try { $script:NativeOutput = (& $Script 2>&1 | Out-String) } finally { $ErrorActionPreference = $previous }
     return $LASTEXITCODE
 }
 
 function Test-WingetPackage {
     param([Parameter(Mandatory)][string]$Id)
     $code = Invoke-Native { & winget list --id $Id --exact --accept-source-agreements }
-    return ($code -eq 0)
+    return ($code -eq 0 -and $script:NativeOutput -match [regex]::Escape($Id))
+}
+
+# winget sometimes cannot install PowerShell 7; fall back to the MSI from GitHub
+function Install-PowerShell7Msi {
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    $release = Invoke-RestMethod -UseBasicParsing -Uri 'https://api.github.com/repos/PowerShell/PowerShell/releases/latest'
+    $asset = $release.assets | Where-Object { $_.name -match 'win-x64\.msi$' } | Select-Object -First 1
+    if (-not $asset) { throw 'no PowerShell 7 MSI found in the latest release' }
+    $msi = Join-Path $env:TEMP $asset.name
+    Invoke-WebRequest -UseBasicParsing -Uri $asset.browser_download_url -OutFile $msi
+    $proc = Start-Process -FilePath msiexec.exe -Wait -PassThru -ArgumentList @('/i', "`"$msi`"", '/qn', 'ADD_PATH=1', 'REGISTER_MANIFEST=1', 'USE_MU=0', 'ENABLE_MU=0')
+    Remove-Item -LiteralPath $msi -Force -ErrorAction SilentlyContinue
+    if ($proc.ExitCode -ne 0 -and $proc.ExitCode -ne 3010) { throw "msiexec exited with $($proc.ExitCode)" }
 }
 
 function Install-WingetPackage {

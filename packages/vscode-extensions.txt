@@ -44,3 +44,5 @@ github.vscode-github-actions
 mikestead.dotenv
 ms-vscode.hexeditor
 humao.rest-client
+platformio.platformio-ide
+ms-vscode.vscode-serial-monitor
