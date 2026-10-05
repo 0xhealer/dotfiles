@@ -23,3 +23,7 @@ Rustlang.Rustup
 tree-sitter.tree-sitter-cli
 Microsoft.Teams
 FastStone.Viewer
+ArduinoSA.IDE.stable
+ArduinoSA.CLI
+KiCad.KiCad
+PuTTY.PuTTY
