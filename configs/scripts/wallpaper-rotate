@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
-off="$HOME/.cache/dotfiles-rotate-off"
+on="$HOME/.cache/dotfiles-rotate-on"
 interval="${WALLPAPER_INTERVAL:-30}"
 
 if [[ "${1:-}" == toggle ]]; then
-  if [[ -e "$off" ]]; then
-    rm -f "$off"
-    notify-send "Wallpaper rotation" "on, every ${interval} min" 2>/dev/null
-  else
-    mkdir -p "$(dirname "$off")" && : >"$off"
+  if [[ -e "$on" ]]; then
+    rm -f "$on"
     notify-send "Wallpaper rotation" "off" 2>/dev/null
+  else
+    mkdir -p "$(dirname "$on")" && : >"$on"
+    notify-send "Wallpaper rotation" "on, every ${interval} min" 2>/dev/null
   fi
   exit 0
 fi
@@ -19,7 +19,7 @@ exec 9>"${XDG_RUNTIME_DIR:-/tmp}/wallpaper-rotate.lock"
 flock -n 9 || exit 0
 
 while sleep "$((interval * 60))"; do
-  [[ -e "$off" ]] && continue
+  [[ -e "$on" ]] || continue
   if [[ -n "${WAYLAND_DISPLAY:-}" ]] && command -v noctalia >/dev/null 2>&1; then
     noctalia msg wallpaper-random
   else
