@@ -54,10 +54,21 @@ function Get-PackageList {
     Get-Content $Path | ForEach-Object { ($_ -replace '#.*$', '').Trim() } | Where-Object { $_ }
 }
 
+# Windows PowerShell 5.1 turns a native command's stderr into a terminating error under
+# $ErrorActionPreference = 'Stop' (code, gh and node all print warnings there). This runs it without that
+# and returns the exit code.
+function Invoke-Native {
+    param([Parameter(Mandatory)][scriptblock]$Script)
+    $previous = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try { $null = & $Script 2>&1 } finally { $ErrorActionPreference = $previous }
+    return $LASTEXITCODE
+}
+
 function Test-WingetPackage {
     param([Parameter(Mandatory)][string]$Id)
-    $null = & winget list --id $Id --exact --accept-source-agreements 2>&1
-    return ($LASTEXITCODE -eq 0)
+    $code = Invoke-Native { & winget list --id $Id --exact --accept-source-agreements }
+    return ($code -eq 0)
 }
 
 function Install-WingetPackage {
