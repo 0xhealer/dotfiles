@@ -1,0 +1,10 @@
+sddm
+qt6-qtdeclarative
+qt6-qt5compat
+qt6-qtsvg
+qt6-qtmultimedia
+gstreamer1-plugins-base
+gstreamer1-plugins-good
+gstreamer1-plugins-bad-free
+gstreamer1-plugins-ugly-free
+gstreamer1-libav
