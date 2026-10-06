@@ -28,7 +28,7 @@ if ($PSVersionTable.PSEdition -eq 'Core') {
 
 # wildcard patterns; anything not matching one of these is left alone
 $bloat = @(
-    'Microsoft.Copilot*', 'Microsoft.Windows.Ai.Copilot*', 'Microsoft.Windows.Copilot*', 'Microsoft.MicrosoftOfficeHub*',
+    '*Copilot*', 'Microsoft.Windows.Ai.Copilot*', 'MicrosoftWindows.Client.AIX', 'MicrosoftWindows.Client.CoPilot', 'Microsoft.OneDriveSync', '*Recall*', 'Microsoft.MicrosoftOfficeHub*',
     'Microsoft.549981C3F5F10',                 # Cortana
     'Microsoft.BingNews', 'Microsoft.BingWeather', 'Microsoft.BingSearch', 'Microsoft.BingFinance', 'Microsoft.BingSports',
     'Clipchamp.Clipchamp', 'Microsoft.Todos', 'Microsoft.GetHelp', 'Microsoft.Getstarted', 'Microsoft.WindowsFeedbackHub',
@@ -104,7 +104,7 @@ if (-not (Test-DryRun)) {
     try {
         $recall = Get-WindowsOptionalFeature -Online -FeatureName Recall -ErrorAction Stop
         if ($recall.State -ne 'Disabled') {
-            Disable-WindowsOptionalFeature -Online -FeatureName Recall -NoRestart -ErrorAction Stop | Out-Null
+            Disable-WindowsOptionalFeature -Online -FeatureName Recall -Remove -NoRestart -ErrorAction Stop | Out-Null
             Write-Ok 'Recall feature disabled'
         } else { Write-Info 'Recall already disabled' }
     } catch { Write-Info 'Recall feature not present on this build' }
@@ -112,38 +112,54 @@ if (-not (Test-DryRun)) {
 
 # ---------------------------------------------------------------- 3. OneDrive
 Write-Info 'removing OneDrive'
-$docs = [Environment]::GetFolderPath('MyDocuments')
-$desk = [Environment]::GetFolderPath('Desktop')
-if ($docs -like '*OneDrive*' -or $desk -like '*OneDrive*') {
-    # Documents or Desktop live inside OneDrive: uninstalling would strand the user's files
-    Write-Warn 'Documents/Desktop are redirected into OneDrive, not removing it (move them back first, then re-run)'
-} else {
-    Set-Reg "$wpol\OneDrive" 'DisableFileSyncNGSC' 1
-    Set-Reg 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' 'ShowSyncProviderNotifications' 0
-    Set-Reg 'HKCU:\Software\Classes\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}' 'System.IsPinnedToNameSpaceTree' 0
-    if (-not (Test-DryRun)) {
-        Get-Process OneDrive -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
-        $setup = @("$env:SystemRoot\SysWOW64\OneDriveSetup.exe", "$env:SystemRoot\System32\OneDriveSetup.exe") |
-            Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
-        if ($setup) {
-            $p = Start-Process -FilePath $setup -ArgumentList '/uninstall' -Wait -PassThru -WindowStyle Hidden
-            Write-Ok 'OneDrive uninstalled'
-        } else {
-            Write-Info 'OneDrive installer not found (already removed)'
+Set-Reg "$wpol\OneDrive" 'DisableFileSyncNGSC' 1
+Set-Reg 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' 'ShowSyncProviderNotifications' 0
+Set-Reg 'HKCU:\Software\Classes\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}' 'System.IsPinnedToNameSpaceTree' 0
+if (-not (Test-DryRun)) {
+    Get-Process OneDrive -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+
+    # point Desktop/Documents/Pictures back at the local profile, copying (never deleting) anything that lives in OneDrive
+    $usf = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders'
+    $known = @(
+        @{ Name = 'Desktop';     Value = 'Desktop';   Local = 'Desktop' },
+        @{ Name = 'Personal';    Value = 'Personal';  Local = 'Documents' },
+        @{ Name = 'My Pictures'; Value = 'My Pictures'; Local = 'Pictures' }
+    )
+    foreach ($k in $known) {
+        $cur = (Get-ItemProperty -Path $usf -Name $k.Value -ErrorAction SilentlyContinue).($k.Value)
+        if (-not $cur) { continue }
+        $curExp = [Environment]::ExpandEnvironmentVariables($cur)
+        if ($curExp -notlike '*OneDrive*') { continue }
+        $dest = Join-Path $env:USERPROFILE $k.Local
+        New-Item -ItemType Directory -Force -Path $dest | Out-Null
+        if (Test-Path -LiteralPath $curExp) {
+            $null = Invoke-Native { & robocopy $curExp $dest /E /XO /R:1 /W:1 /NFL /NDL /NJH /NJS /NP }
         }
-        # leftovers, but never a folder that still holds files
-        foreach ($d in @("$env:LOCALAPPDATA\Microsoft\OneDrive", "$env:ProgramData\Microsoft OneDrive")) {
-            if (Test-Path -LiteralPath $d) { Remove-Item -LiteralPath $d -Recurse -Force -ErrorAction SilentlyContinue }
-        }
-        $odUser = Join-Path $env:USERPROFILE 'OneDrive'
-        if ((Test-Path -LiteralPath $odUser) -and -not (Get-ChildItem -LiteralPath $odUser -Force -ErrorAction SilentlyContinue | Select-Object -First 1)) {
-            Remove-Item -LiteralPath $odUser -Force -ErrorAction SilentlyContinue
-        } elseif (Test-Path -LiteralPath $odUser) {
-            Write-Warn "left $odUser in place, it still contains files"
-        }
-        Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'OneDrive' -ErrorAction SilentlyContinue
-        Get-ScheduledTask -TaskName 'OneDrive*' -ErrorAction SilentlyContinue | Unregister-ScheduledTask -Confirm:$false -ErrorAction SilentlyContinue
+        Set-ItemProperty -Path $usf -Name $k.Value -Value ('%USERPROFILE%\' + $k.Local) -Type ExpandString
+        Write-Ok "$($k.Local) moved back to $dest"
     }
+
+    $setup = @("$env:SystemRoot\SysWOW64\OneDriveSetup.exe", "$env:SystemRoot\System32\OneDriveSetup.exe") |
+        Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+    if ($setup) {
+        $null = Start-Process -FilePath $setup -ArgumentList '/uninstall' -Wait -PassThru -WindowStyle Hidden
+    }
+    $null = Invoke-Native { & winget uninstall --id Microsoft.OneDrive --silent --disable-interactivity --accept-source-agreements }
+    foreach ($d in @("$env:LOCALAPPDATA\Microsoft\OneDrive", "$env:ProgramData\Microsoft OneDrive", "$env:ProgramFiles\Microsoft OneDrive", "${env:ProgramFiles(x86)}\Microsoft OneDrive")) {
+        if (Test-Path -LiteralPath $d) { Remove-Item -LiteralPath $d -Recurse -Force -ErrorAction SilentlyContinue }
+    }
+    $odUser = Join-Path $env:USERPROFILE 'OneDrive'
+    if (Test-Path -LiteralPath $odUser) {
+        if (Get-ChildItem -LiteralPath $odUser -Force -ErrorAction SilentlyContinue | Select-Object -First 1) {
+            Write-Warn "left $odUser in place, delete it yourself once you have checked it (its files were copied out)"
+        } else {
+            Remove-Item -LiteralPath $odUser -Force -ErrorAction SilentlyContinue
+        }
+    }
+    Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'OneDrive' -ErrorAction SilentlyContinue
+    Get-ScheduledTask -TaskName 'OneDrive*' -ErrorAction SilentlyContinue | Unregister-ScheduledTask -Confirm:$false -ErrorAction SilentlyContinue
+    $still = (Test-Path "$env:SystemRoot\SysWOW64\OneDriveSetup.exe") -or (Test-Path "$env:LOCALAPPDATA\Microsoft\OneDrive\OneDrive.exe")
+    if ($still) { Write-Warn 'OneDrive files still present after uninstall, re-run after a reboot' } else { Write-Ok 'OneDrive removed' }
 }
 
 # ---------------------------------------------------------------- 4. Edge
