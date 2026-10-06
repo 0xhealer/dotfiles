@@ -86,31 +86,30 @@ function Install-PowerShell7Msi {
 
 function Install-WingetPackage {
     param([Parameter(Mandatory)][string]$Id)
-    if ($script:DryRun) {
-        Write-Host "    [dry-run] winget install --id $Id"
-        return $true
-    }
-    if (Test-WingetPackage -Id $Id) {
-        Write-Info "already installed: $Id"
-        return $true
-    }
-    # Start-Process keeps winget on the real console. Piping it (| Out-Host) makes winget think its output is
-    # redirected, so its spinner is printed on a new line for every frame instead of redrawing in place.
+    if ($script:DryRun) { Write-Host "    [dry-run] winget install --id $Id"; return $true }
+    if (Test-WingetPackage -Id $Id) { Write-Info "already installed: $Id"; return $true }
     $winget = (Get-Command winget -ErrorAction Stop).Source
     $proc = Start-Process -FilePath $winget -NoNewWindow -PassThru -ArgumentList @(
         'install', '--id', $Id, '--exact', '--silent', '--disable-interactivity',
         '--accept-package-agreements', '--accept-source-agreements')
-    # a hung installer must not block the whole run
+    # Cache the handle now, otherwise ExitCode is $null after the process exits.
+    $null = $proc.Handle
     if (-not $proc.WaitForExit(20 * 60 * 1000)) {
         try { Stop-Process -Id $proc.Id -Force -ErrorAction Stop } catch { }
         Write-Warn "winget timed out for $Id after 20 minutes, continuing"
         return $false
     }
-    if ($proc.ExitCode -eq 0) {
-        Write-Ok "installed $Id"
-        return $true
-    }
-    Write-Warn "winget failed for $Id (exit $($proc.ExitCode))"
+    $proc.WaitForExit()
+    $proc.Refresh()
+    $code = $proc.ExitCode
+    # 0 ok, 3010 reboot required, 0x8A150061 already installed,
+    # 0x8A15002B no applicable upgrade, 0x8A150109 restart needed to finish.
+    $benign = @(0, 3010, -1978335135, -1978335189, -1978334967)
+    if ($null -ne $code -and $benign -contains [int]$code) { Write-Ok "installed $Id"; return $true }
+    # Unknown or missing exit code: trust the system, not the code.
+    if (Test-WingetPackage -Id $Id) { Write-Ok "installed $Id"; return $true }
+    $shown = if ($null -eq $code) { 'unknown' } else { '0x{0:X8}' -f [int]$code }
+    Write-Warn "winget failed for $Id (exit $shown)"
     return $false
 }
 
