@@ -57,12 +57,21 @@ $removed = 0
 if (Test-DryRun) {
     Write-Host '    [dry-run] Remove-AppxPackage / Remove-AppxProvisionedPackage for the bloat list'
 } else {
-    $installed = @(Get-AppxPackage -AllUsers -ErrorAction SilentlyContinue | Where-Object { -not $_.NonRemovable -and (Test-Bloat $_.Name) })
+    $installed = @(Get-AppxPackage -AllUsers -ErrorAction SilentlyContinue | Where-Object { Test-Bloat $_.Name })
+    $deprov = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned'
+    $inbox = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\InboxApplications'
     foreach ($pkg in $installed) {
+        # mark deprovisioned first so updates and new accounts never bring it back, and so "non-removable" in-box apps can go
+        Set-Reg "$deprov\$($pkg.PackageFamilyName)" 'Purged' 1
+        if ($pkg.NonRemovable) {
+            Get-ChildItem -Path $inbox -ErrorAction SilentlyContinue | Where-Object { $_.PSChildName -like "$($pkg.Name)_*" } |
+                ForEach-Object { Remove-Item -LiteralPath $_.PSPath -Recurse -Force -ErrorAction SilentlyContinue }
+        }
         try {
             Remove-AppxPackage -Package $pkg.PackageFullName -AllUsers -ErrorAction Stop
             Write-Ok "removed $($pkg.Name)"
             $removed++
+            Remove-Item -LiteralPath (Join-Path $env:LOCALAPPDATA "Packages\$($pkg.PackageFamilyName)") -Recurse -Force -ErrorAction SilentlyContinue
         } catch {
             try {
                 Remove-AppxPackage -Package $pkg.PackageFullName -ErrorAction Stop
@@ -262,6 +271,35 @@ if (-not (Test-DryRun)) {
     }
     # restart Explorer so taskbar changes apply now
     Get-Process explorer -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+}
+
+# ---------------------------------------------------------------- 6. Purge leftovers
+Write-Info 'purging leftovers, tasks and services'
+if (-not (Test-DryRun)) {
+    # Edge program files and profile (EdgeUpdate and WebView2 stay: other apps need them)
+    if (-not (Get-ChildItem -Path $edgeRoot -Filter msedge.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1)) {
+        foreach ($d in @((Join-Path ${env:ProgramFiles(x86)} 'Microsoft\Edge'), "$env:LOCALAPPDATA\Microsoft\Edge")) {
+            if (Test-Path -LiteralPath $d) { Remove-Item -LiteralPath $d -Recurse -Force -ErrorAction SilentlyContinue }
+        }
+    }
+    # telemetry, Recall and Xbox scheduled tasks
+    $taskLike = @('\Microsoft\Windows\Application Experience\*', '\Microsoft\Windows\Customer Experience Improvement Program\*',
+        '\Microsoft\Windows\Feedback\*', '\Microsoft\Windows\WindowsAI\*', '\Microsoft\XblGameSave\*',
+        '\Microsoft\Windows\Windows Error Reporting\*')
+    foreach ($t in @(Get-ScheduledTask -ErrorAction SilentlyContinue)) {
+        $full = $t.TaskPath + $t.TaskName
+        foreach ($pat in $taskLike) {
+            if ($full -like $pat) { Disable-ScheduledTask -InputObject $t -ErrorAction SilentlyContinue | Out-Null; break }
+        }
+    }
+    # services nobody asked for
+    foreach ($svc in 'XblAuthManager', 'XblGameSave', 'XboxGipSvc', 'XboxNetApiSvc', 'RetailDemo', 'WerSvc', 'diagnosticshub.standardcollector.service') {
+        if (Get-Service -Name $svc -ErrorAction SilentlyContinue) {
+            Stop-Service -Name $svc -Force -ErrorAction SilentlyContinue
+            Set-Service -Name $svc -StartupType Disabled -ErrorAction SilentlyContinue
+        }
+    }
+    Write-Ok 'leftovers purged'
 }
 
 Write-Ok 'debloat done, sign out or reboot to finish'
