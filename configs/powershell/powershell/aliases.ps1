@@ -161,7 +161,7 @@ function untar { tar -xvf @args }
 function ungz { tar -xzvf @args }
 function unbz2 { tar -xjvf @args }
 
-function weather { Invoke-RestMethod "wttr.in?u" }
+function weather { Invoke-RestMethod "wttr.in/mangalore?u" }
 function ff { fastfetch }
 # hi/notify-send dropped: no built-in Windows equivalent without adding
 # the BurntToast module. Say so rather than fake a silent no-op.
@@ -174,3 +174,4 @@ function projects { Set-Location ~/workspace/github; ls }
 function workspace { Set-Location ~/workspace; ls }
 
 Set-Alias -Name treesitter -Value tree-sitter
+Set-Alias -Name code -Value code-insiders

@@ -3,7 +3,7 @@ Microsoft.WindowsTerminal
 Brave.Brave
 Starship.Starship
 Neovim.Neovim
-Microsoft.VisualStudioCode
+Microsoft.VisualStudioCode.Insiders
 Git.Git
 GitHub.cli
 junegunn.fzf
@@ -27,3 +27,29 @@ ArduinoSA.IDE.stable
 ArduinoSA.CLI
 KiCad.KiCad
 PuTTY.PuTTY
+
+# virtualization and networking
+Docker.DockerDesktop
+Tailscale.Tailscale
+
+# apps (from the dots list)
+VideoLAN.VLC
+Obsidian.Obsidian
+Foxit.FoxitReader
+Microsoft.PowerToys
+Microsoft.VCRedist.2015+.x64
+RevoUninstaller.RevoUninstaller
+Google.GoogleDrive
+HandBrake.HandBrake
+Anthropic.Claude
+Anthropic.ClaudeCode
+AppWork.JDownloader
+Oracle.JDK.17
+WinSCP.WinSCP
+
+# cli parity with the Linux lists
+JesseDuffield.lazygit
+jqlang.jq
+Kitware.CMake
+JernejSimoncic.Wget
+Google.PlatformTools
