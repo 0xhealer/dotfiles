@@ -29,6 +29,18 @@ unit="rclone-gdrive.service"
 unit_path="$HOME/.config/systemd/user/$unit"
 
 have_remote() { rclone listremotes 2>/dev/null | grep -qx "$remote:"; }
+# the remote must be a plain Google Drive one; a "crypt" remote (or a leftover from an earlier attempt)
+# would show scrambled file and folder names in Obsidian
+remote_type() { rclone config show "$remote" 2>/dev/null | awk -F' *= *' '$1=="type"{print $2; exit}'; }
+check_plain_remote() {
+  local t
+  t="$(remote_type)"
+  if [[ "$t" != drive ]]; then
+    log_err "rclone remote '$remote' has type '${t:-unknown}', not 'drive' (that is what encrypts names and contents)"
+    log_err "remove it with: rclone config delete $remote   (or use another name: GDRIVE_REMOTE=gdrive-plain $0)"
+    return 1
+  fi
+}
 mounted() { mountpoint -q "$mount_dir" 2>/dev/null; }
 
 install_rclone() {
@@ -50,7 +62,8 @@ install_rclone() {
 do_auth() {
   log_step "Google Drive login"
   if have_remote; then
-    log_ok "rclone remote '$remote' already exists"
+    check_plain_remote || return 1
+    log_ok "rclone remote '$remote' already exists (plain Google Drive, not encrypted)"
     return 0
   fi
   if is_dry; then
@@ -72,6 +85,7 @@ do_auth() {
 do_service() {
   log_step "Google Drive mount ($mount_dir)"
   have_remote || is_dry || { log_err "no rclone remote '$remote', run: $0 auth"; return 1; }
+  is_dry || check_plain_remote || return 1
   local rclone_bin fuse_umount
   rclone_bin="$(command -v rclone || echo /usr/bin/rclone)"
   fuse_umount="$(command -v fusermount3 || command -v fusermount || echo /usr/bin/fusermount3)"
@@ -165,7 +179,12 @@ do_vault() {
 }
 
 do_status() {
-  have_remote && log_ok "remote '$remote' exists" || log_warn "no remote '$remote'"
+  if have_remote; then
+    log_ok "remote '$remote' exists, type: $(remote_type)"
+    check_plain_remote || true
+  else
+    log_warn "no remote '$remote'"
+  fi
   mounted && log_ok "mounted at $mount_dir" || log_warn "not mounted"
   systemctl --user is-active "$unit" 2>/dev/null | sed 's/^/  service: /' || true
   [[ -d "$vault_dir" ]] && log_ok "vault dir: $vault_dir" || log_warn "no vault dir yet"
