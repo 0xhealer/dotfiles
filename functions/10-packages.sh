@@ -12,8 +12,24 @@ setup_fedora_repos() {
     sudo_run dnf install -y "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm" ||
       log_warn "could not add RPM Fusion, vlc will be skipped"
   fi
-  sudo_run dnf copr enable -y scottames/vicinae
-  sudo_run dnf copr enable -y pgdev/ghostty
+  # a COPR without a build for this Fedora release 404s and breaks every later dnf call,
+  # so each one is probed and dropped (with its package) when it has nothing for us
+  enable_copr scottames/vicinae vicinae
+  enable_copr pgdev/ghostty ghostty
+}
+
+enable_copr() {
+  local repo="$1" pkg="$2" id
+  is_dry && { sudo_run dnf copr enable -y "$repo"; return 0; }
+  id="copr:copr.fedorainfracloud.org:${repo/\//:}"
+  if sudo dnf copr enable -y "$repo" && sudo dnf makecache --repo "$id" >/dev/null 2>&1; then
+    return 0
+  fi
+  log_warn "COPR $repo has no build for Fedora $(rpm -E %fedora), skipping $pkg"
+  sudo dnf copr disable -y "$repo" >/dev/null 2>&1 || true
+  sudo rm -f "/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:${repo/\//:}.repo" || true
+  DOTS_SKIP_PKGS="${DOTS_SKIP_PKGS:-} $pkg"
+  export DOTS_SKIP_PKGS
 }
 
 if [[ "$DOTS_FAMILY" == fedora ]]; then

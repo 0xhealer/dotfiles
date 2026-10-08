@@ -203,6 +203,7 @@ install_packages_from_file() {
   local file="$1" line repo=() aur=()
   [[ -r "$file" ]] || die "package list not found: $file"
   while IFS= read -r line; do
+    [[ " ${DOTS_SKIP_PKGS:-} " == *" $line "* ]] && continue
     if [[ "$line" == aur:* ]]; then
       aur+=("${line#aur:}")
     else

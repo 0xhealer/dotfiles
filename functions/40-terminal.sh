@@ -56,6 +56,7 @@ fi
 if ! has ghostty; then
   case "$DOTS_FAMILY" in
     debian) install_ghostty_deb ;;
+    fedora) install_ghostty_appimage ;;
     *) log_warn "ghostty was not installed by the package step on $DOTS_DISTRO" ;;
   esac
 fi
