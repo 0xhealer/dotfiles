@@ -13,23 +13,27 @@ setup_fedora_repos() {
       log_warn "could not add RPM Fusion, vlc will be skipped"
   fi
   # a COPR without a build for this Fedora release 404s and breaks every later dnf call,
-  # so each one is probed and dropped (with its package) when it has nothing for us
-  enable_copr scottames/vicinae vicinae
-  enable_copr pgdev/ghostty ghostty
+  # so each one is probed and dropped when it has nothing for us
+  enable_copr scottames/vicinae || skip_pkg vicinae
+  enable_copr scottames/ghostty || enable_copr pgdev/ghostty || skip_pkg ghostty
+}
+
+skip_pkg() {
+  log_warn "$1 is not available from a COPR on Fedora $(rpm -E %fedora 2>/dev/null || echo ?), skipping it"
+  DOTS_SKIP_PKGS="${DOTS_SKIP_PKGS:-} $1"
+  export DOTS_SKIP_PKGS
 }
 
 enable_copr() {
-  local repo="$1" pkg="$2" id
-  is_dry && { sudo_run dnf copr enable -y "$repo"; return 0; }
+  local repo="$1" id
+  if is_dry; then sudo_run dnf copr enable -y "$repo"; return 0; fi
   id="copr:copr.fedorainfracloud.org:${repo/\//:}"
   if sudo dnf copr enable -y "$repo" && sudo dnf makecache --repo "$id" >/dev/null 2>&1; then
     return 0
   fi
-  log_warn "COPR $repo has no build for Fedora $(rpm -E %fedora), skipping $pkg"
   sudo dnf copr disable -y "$repo" >/dev/null 2>&1 || true
   sudo rm -f "/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:${repo/\//:}.repo" || true
-  DOTS_SKIP_PKGS="${DOTS_SKIP_PKGS:-} $pkg"
-  export DOTS_SKIP_PKGS
+  return 1
 }
 
 if [[ "$DOTS_FAMILY" == fedora ]]; then
