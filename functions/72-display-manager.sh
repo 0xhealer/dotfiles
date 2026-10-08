@@ -13,8 +13,7 @@ esac
 
 log_step "Display manager"
 
-is_vmware() { [[ "${DOTS_VIRT:-$(systemd-detect-virt 2>/dev/null || true)}" == vmware ]]; }
-have_qt6_greeter() { command -v sddm-greeter-qt6 >/dev/null 2>&1 || [[ -x /usr/lib/sddm/sddm-greeter-qt6 ]]; }
+source "$(dirname "${BASH_SOURCE[0]}")/../helper/qylock.sh"
 
 remove_virtual_keyboard() {
   is_dry && return 0
@@ -27,48 +26,6 @@ remove_virtual_keyboard() {
       sudo apt-get remove -y "$pkg" >/dev/null || log_warn "could not remove $pkg"
     fi
   done < <(dpkg-query -W -f='${db:Status-Abbrev} ${Package}\n' 2>/dev/null | awk '$1 ~ /^ii/ && $2 ~ /virtualkeyboard/ {print $2}')
-}
-
-qylock_repo="${DOTS_QYLOCK_REPO:-https://github.com/Darkkal44/qylock}"
-qylock_ref="${DOTS_QYLOCK_REF:-f6561e2ceae33f26e5e660742a5df2f725cbe514}"
-qylock_src="$HOME/.cache/dotfiles/qylock"
-
-install_qylock() {
-  [[ "$DOTS_FAMILY" == debian ]] && return 1
-  if is_vmware; then
-    log_info "VMware: keeping the dots SDDM theme"
-    return 1
-  fi
-  local pkgs
-  mapfile -t pkgs < <(pkg_list "$DOTS_ROOT/packages/qylock-$DOTS_FAMILY.txt")
-  pkg_install "${pkgs[@]}"
-  if ! have_qt6_greeter && ! is_dry; then
-    log_warn "no Qt6 SDDM greeter, qylock sword needs it, keeping the dots theme"
-    return 1
-  fi
-  run rm -rf "$qylock_src"
-  run mkdir -p "$(dirname "$qylock_src")"
-  if ! is_dry; then
-    {
-      git init -q "$qylock_src" &&
-        git -C "$qylock_src" remote add origin "$qylock_repo" &&
-        git -C "$qylock_src" sparse-checkout set themes/sword &&
-        GIT_TERMINAL_PROMPT=0 git -C "$qylock_src" fetch -q --depth 1 --filter=blob:none origin "$qylock_ref" &&
-        git -C "$qylock_src" checkout -q FETCH_HEAD
-    } || { log_warn "could not fetch qylock, keeping the dots theme"; return 1; }
-    [[ -f "$qylock_src/themes/sword/Main.qml" ]] || { log_warn "qylock sword theme missing, keeping the dots theme"; return 1; }
-  else
-    printf '    [dry-run] fetch qylock %s (themes/sword)\n' "$qylock_ref"
-  fi
-  sudo_run rm -rf /usr/share/sddm/themes/sword
-  sudo_run mkdir -p /usr/share/sddm/themes/sword
-  sudo_run cp -r "$qylock_src/themes/sword/." /usr/share/sddm/themes/sword/
-  sudo_run chmod -R a+rX /usr/share/sddm/themes/sword
-  if [[ "$DOTS_FAMILY" == fedora ]]; then
-    log_info "Fedora: sword's video is H.264, if the login background is black run: sudo dnf swap ffmpeg-free ffmpeg --allowerasing (RPM Fusion)"
-  fi
-  log_ok "qylock sword installed"
-  return 0
 }
 
 install_greeter() {
