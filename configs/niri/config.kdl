@@ -73,12 +73,7 @@ window-rule {
     draw-border-with-background false
 }
 
-// every window is translucent over the blurred wallpaper; ghostty and kitty already set their own 0.85 background opacity
-window-rule {
-    exclude app-id=r#"^(com\.mitchellh\.ghostty|kitty)$"#
-    opacity 0.85
-}
-
+// translucency and blur live in transparency.kdl, toggled with Mod+Shift+T (niri-transparency)
 // @BLUR@
 
 binds {
@@ -176,6 +171,7 @@ binds {
     Mod+Equal   { set-column-width "+5%"; }
     Mod+V       { toggle-window-floating; }
     Mod+T       { toggle-column-tabbed-display; }
+    Mod+Shift+T { spawn "sh" "-c" "exec $HOME/.local/bin/niri-transparency toggle"; }
 
     Print      { screenshot; }
     Ctrl+Print { screenshot-screen; }
