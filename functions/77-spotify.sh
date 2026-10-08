@@ -24,8 +24,9 @@ install_spotify_deb() {
 
 install_spotify_flatpak() {
   pkg_install flatpak
-  sudo_run flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-  run flatpak install --user -y flathub com.spotify.Client
+  # the user installation does not see the system-wide flathub remote the other steps add
+  run flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+  run flatpak install --user -y --noninteractive flathub com.spotify.Client
 }
 
 case "$DOTS_FAMILY" in
@@ -38,7 +39,12 @@ case "$DOTS_FAMILY" in
     spotify_path="/opt/spotify"
     ;;
   fedora)
-    flatpak list --user 2>/dev/null | grep -q com.spotify.Client || install_spotify_flatpak
+    if ! flatpak list --user 2>/dev/null | grep -q com.spotify.Client; then
+      if ! install_spotify_flatpak; then
+        log_warn "could not install Spotify from Flathub, install it later and re-run: ./install.sh spotify"
+        exit 0
+      fi
+    fi
     spotify_path="$HOME/.local/share/flatpak/app/com.spotify.Client/x86_64/stable/active/files/extra/share/spotify"
     prefs_path="$HOME/.var/app/com.spotify.Client/config/spotify/prefs"
     ;;
