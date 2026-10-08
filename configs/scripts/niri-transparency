@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Toggle niri window transparency (and blur) by rewriting ~/.config/niri/transparency.kdl, which
+# config.kdl includes. niri reloads on change. Usage: niri-transparency [toggle|on|off|apply|status]
+set -euo pipefail
+
+cfg="$HOME/.config/niri"
+niri_src="$cfg/transparency.d" # snippets copied there by install.sh
+state="$HOME/.cache/dotfiles/niri-opaque"
+mkdir -p "$cfg" "$(dirname "$state")"
+
+render() {
+  local out
+  out="$(mktemp "$cfg/.transparency.XXXXXX")"
+  if [[ -f "$state" ]]; then
+    cat "$niri_src/transparency-off.kdl" >"$out"
+  else
+    cat "$niri_src/transparency-on.kdl" >"$out"
+    [[ -f "$cfg/.blur-supported" ]] && cat "$niri_src/blur.kdl" >>"$out"
+  fi
+  mv -f "$out" "$cfg/transparency.kdl"
+  # niri polls the config mtime, an include change alone is not always noticed
+  touch "$cfg/config.kdl" 2>/dev/null || true
+}
+
+notify() { command -v notify-send >/dev/null && notify-send -t 1500 "Transparency" "$1" || true; }
+
+case "${1:-toggle}" in
+  toggle)
+    if [[ -f "$state" ]]; then rm -f "$state"; render; notify "translucent"; else : >"$state"; render; notify "opaque"; fi
+    ;;
+  on) rm -f "$state"; render ;;
+  off) : >"$state"; render ;;
+  apply) render ;;
+  status) [[ -f "$state" ]] && echo opaque || echo translucent ;;
+  *) echo "usage: niri-transparency [toggle|on|off|apply|status]" >&2; exit 2 ;;
+esac

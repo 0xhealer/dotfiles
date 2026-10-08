@@ -28,15 +28,12 @@ setup_i3() {
 }
 
 render_niri_config() {
-  local src="$DOTS_ROOT/configs/niri/config.kdl" blur="$DOTS_ROOT/configs/niri/blur.kdl"
-  local out="$1" with_blur="$2" inc
-  # Noctalia renders niri's colours into noctalia.kdl; niri 25.11+ can include it
+  local src="$DOTS_ROOT/configs/niri/config.kdl"
+  local out="$1" inc
+  # Noctalia renders niri's colours into noctalia.kdl; niri 25.11+ can include it.
+  # transparency.kdl holds the window opacity and blur and is rewritten by niri-transparency
   inc='include "noctalia.kdl"'
-  if [[ "$with_blur" == 1 ]]; then
-    sed -e "/^\/\/ @BLUR@/{r $blur" -e 'd}' -e "s|^// @NOCTALIA@|$inc|" "$src" >"$out"
-  else
-    sed -e '/^\/\/ @BLUR@/d' -e "s|^// @NOCTALIA@|$inc|" "$src" >"$out"
-  fi
+  sed -e '/^\/\/ @BLUR@/{s|.*|include "transparency.kdl"|}' -e "s|^// @NOCTALIA@|$inc|" "$src" >"$out"
 }
 
 niri_valid() {
@@ -114,12 +111,16 @@ setup_niri() {
   fi
 
   tmp="$(mktemp)"
-  render_niri_config "$tmp" "$blur"
-  if ! niri_valid "$tmp" && ((blur)); then
-    log_warn "niri rejected the blur rule, falling back to config without blur"
-    blur=0
-    render_niri_config "$tmp" 0
+  if ((blur)); then
+    render_niri_config "$tmp"
+    # check niri accepts the blur rule before enabling it
+    local probe
+    probe="$(mktemp)"
+    cat "$c/niri/blur.kdl" >"$probe"
+    niri_valid "$probe" || { log_warn "niri rejected the blur rule, installing without blur"; blur=0; }
+    rm -f "$probe"
   fi
+  render_niri_config "$tmp"
   if ! niri_valid "$tmp"; then
     log_warn "niri validate failed for the rendered config; installing it anyway, check with: niri validate"
   fi
@@ -128,6 +129,14 @@ setup_niri() {
   # niri refuses a config whose include is missing, so create the file before Noctalia first writes it
   [[ -f "$HOME/.config/niri/noctalia.kdl" ]] || { is_dry || : >"$HOME/.config/niri/noctalia.kdl"; }
   run mkdir -p "$HOME/Pictures/Screenshots" "$HOME/.local/bin"
+  if ! is_dry; then
+    if ((blur)); then : >"$HOME/.config/niri/.blur-supported"; else rm -f "$HOME/.config/niri/.blur-supported"; fi
+  fi
+  run mkdir -p "$HOME/.config/niri/transparency.d"
+  run cp -f "$c/niri/transparency-on.kdl" "$c/niri/transparency-off.kdl" "$c/niri/blur.kdl" "$HOME/.config/niri/transparency.d/"
+  ensure_executable "$c/scripts/niri-transparency"
+  link_config "$c/scripts/niri-transparency" "$HOME/.local/bin/niri-transparency"
+  run bash "$c/scripts/niri-transparency" apply
   ensure_executable "$c/scripts/wallpaper-rotate"
   link_config "$c/scripts/wallpaper-rotate" "$HOME/.local/bin/wallpaper-rotate"
 
