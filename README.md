@@ -57,3 +57,13 @@ assets/                    wallpapers
 
 - Keybindings: [KEYBINDINGS.md](KEYBINDINGS.md)
 - `ghclone <repo>` and `ghcreate [name] [-p]` clone into and create repos under `~/workspace/github` (needs `gh auth login` once).
+
+## Google Drive and Obsidian (Linux)
+
+```bash
+tools/gdrive-obsidian.sh          # install rclone, sign in once, mount ~/GoogleDrive, create the Obsidian vault
+tools/gdrive-obsidian.sh status
+```
+
+Google has no Linux client, so Drive is an rclone mount run as a systemd user service (`rclone-gdrive.service`, full VFS cache so notes stay readable offline). The vault lives in `~/GoogleDrive/Obsidian`; Flatpak Obsidian is given access to the mount. Set `GDRIVE_CLIENT_ID` and `GDRIVE_CLIENT_SECRET` to use your own Google API client instead of rclone's shared one.
+
