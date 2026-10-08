@@ -1,5 +1,5 @@
 // every window is slightly translucent; ghostty and kitty set their own background opacity
 window-rule {
     exclude app-id=r#"^(com\.mitchellh\.ghostty|kitty)$"#
-    opacity 0.92
+    opacity 0.85
 }
