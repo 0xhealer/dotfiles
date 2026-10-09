@@ -81,19 +81,19 @@ setup_default_apps() {
     } >"$HOME/.config/environment.d/91-dotfiles-defaults.conf"
     printf 'com.mitchellh.ghostty.desktop\n' >"$HOME/.config/xdg-terminals.list"
   fi
-  # Dolphin needs a menu file to know the installed apps (Open With, default apps)
+  # KDE apps need a menu file to know the installed apps (Open With, default apps)
   if [[ -n "$prefix" ]] && has kbuildsycoca6; then
     run env XDG_MENU_PREFIX="$prefix" kbuildsycoca6 --noincremental
   fi
   if has xdg-mime; then
-    run xdg-mime default org.kde.dolphin.desktop inode/directory
+    run xdg-mime default thunar.desktop inode/directory
     run xdg-mime default com.mitchellh.ghostty.desktop x-scheme-handler/terminal
   fi
   if has kwriteconfig6; then
     run kwriteconfig6 --file kdeglobals --group General --key TerminalApplication ghostty
     run kwriteconfig6 --file kdeglobals --group General --key TerminalService com.mitchellh.ghostty.desktop
   fi
-  log_info "defaults: Dolphin for folders, ghostty for terminals"
+  log_info "defaults: Thunar for folders, ghostty for terminals"
 }
 
 setup_niri() {

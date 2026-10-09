@@ -61,6 +61,7 @@ hotkey-overlay {
     skip-at-startup
 }
 
+spawn-at-startup "fcitx5" "-d"
 spawn-at-startup "noctalia"
 spawn-at-startup "sh" "-c" "exec $HOME/.local/bin/wallpaper-rotate"
 spawn-at-startup "sh" "-c" "command -v vicinae >/dev/null && exec vicinae server"
@@ -82,7 +83,7 @@ binds {
     Mod+Return       { spawn "ghostty"; }
     Mod+Shift+Return { spawn "kitty"; }
     Mod+B { spawn "sh" "-c" "for b in brave-browser brave brave-bin firefox firefox-esr; do command -v \"$b\" >/dev/null && exec \"$b\"; done; exec xdg-open about:blank"; }
-    Mod+E { spawn "dolphin"; }
+    Mod+E { spawn "thunar"; }
     Mod+Space       { spawn "sh" "-c" "if command -v vicinae >/dev/null; then exec vicinae toggle; else exec noctalia msg panel-toggle launcher; fi"; }
     Mod+D           { spawn "sh" "-c" "if command -v vicinae >/dev/null; then exec vicinae toggle; else exec noctalia msg panel-toggle launcher; fi"; }
     Mod+Shift+D     { spawn "noctalia" "msg" "panel-toggle" "launcher"; }
