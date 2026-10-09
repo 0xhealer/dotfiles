@@ -1,6 +1,12 @@
 [include]
     path = ~/.gitconfig.local
 
+# GitHub over HTTPS uses the gh login (gh auth login), so there is no password prompt
+[credential "https://github.com"]
+    helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+    helper = !gh auth git-credential
+
 [init]
     defaultBranch = main
 

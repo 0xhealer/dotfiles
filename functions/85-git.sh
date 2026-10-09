@@ -18,6 +18,24 @@ elif [[ ! -f "$local_cfg" ]]; then
   log_warn "no git identity found; set GIT_NAME/GIT_EMAIL or edit $local_cfg"
 fi
 
+# settings added on this machine (credential helper, signing key) live in ~/.gitconfig.local so that
+# re-installing never loses them; anything found in an existing ~/.gitconfig is moved there first
+preserve_machine_settings() {
+  [[ -f "$HOME/.gitconfig" && ! -L "$HOME/.gitconfig" ]] || return 0
+  is_dry && return 0
+  local key val
+  while IFS= read -r line; do
+    key="${line%% *}"
+    val="${line#* }"
+    # skip what the repo config already provides
+    case "$key" in credential.https://github.com.helper | credential.https://gist.github.com.helper) continue ;; esac
+    git config --file "$local_cfg" --get-all "$key" 2>/dev/null | grep -qxF -- "$val" && continue
+    git config --file "$local_cfg" --add "$key" "$val"
+    log_info "kept $key in $local_cfg"
+  done < <(git config --file "$HOME/.gitconfig" --get-regexp '^(credential\.|gpg\.|commit\.gpgsign|tag\.gpgsign|user\.signingkey|safe\.directory|url\.)' 2>/dev/null || true)
+}
+preserve_machine_settings
+
 link_config "$DOTS_ROOT/configs/git/gitconfig" "$HOME/.gitconfig"
 
 if has gh && ! gh auth status >/dev/null 2>&1; then
