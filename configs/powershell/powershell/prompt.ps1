@@ -14,7 +14,7 @@
 Invoke-Expression (&starship init powershell)
 
 # One-line session banner in the ButterZsh layout, values only, same as zsh and fish:
-#   — host · kernel · ip · wm · shell —
+#   — host kernel ip · wm · shell —
 function Show-DotsHeader {
     if ($script:_DotsHeaderShown -or $Host.Name -ne 'ConsoleHost') { return }
     $script:_DotsHeaderShown = $true
@@ -30,8 +30,8 @@ function Show-DotsHeader {
         Where-Object { $_.Address.AddressFamily -eq 'InterNetwork' } |
         Select-Object -First 1 -ExpandProperty Address
 
-    $parts = "`e[38;5;212m—`e[0m `e[1;97m$hostName`e[0m `e[2m·`e[0m `e[97m$kernel`e[0m"
-    if ($ip) { $parts += " `e[2m·`e[0m `e[97m$ip`e[0m" }
+    $parts = "`e[38;5;212m—`e[0m `e[1;97m$hostName`e[0m `e[97m$kernel`e[0m"
+    if ($ip) { $parts += " `e[97m$ip`e[0m" }
     $parts += " `e[2m·`e[0m `e[38;5;114mdwm`e[0m `e[2m·`e[0m `e[38;5;213mpwsh $($PSVersionTable.PSVersion)`e[0m `e[38;5;212m—`e[0m"
     Write-Host $parts
     Write-Host ''
