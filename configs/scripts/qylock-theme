@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Switch the SDDM greeter between the installed qylock themes (takes effect at the next login screen).
+# Usage: qylock-theme [list|<name>|preview <name>]
+set -euo pipefail
+
+dir=/usr/share/sddm/themes
+conf=/etc/sddm.conf.d/zz-dotfiles.conf
+known=(ninja_gaiden enfield pixel-sakura wuwa sword dots)
+
+installed=()
+for t in "${known[@]}"; do [[ -f "$dir/$t/Main.qml" ]] && installed+=("$t"); done
+((${#installed[@]})) || { echo "no qylock themes installed, run: ./install.sh qylock" >&2; exit 1; }
+
+current="$(grep -h '^Current=' "$conf" 2>/dev/null | tail -1 | cut -d= -f2 || true)"
+
+case "${1:-list}" in
+  list)
+    for t in "${installed[@]}"; do
+      [[ "$t" == "$current" ]] && echo "* $t" || echo "  $t"
+    done
+    ;;
+  preview)
+    t="${2:?usage: qylock-theme preview <name>}"
+    [[ -f "$dir/$t/Main.qml" ]] || { echo "theme '$t' is not installed" >&2; exit 1; }
+    exec sddm-greeter-qt6 --test-mode --theme "$dir/$t"
+    ;;
+  *)
+    t="$1"
+    [[ -f "$dir/$t/Main.qml" ]] || { echo "theme '$t' is not installed; installed: ${installed[*]}" >&2; exit 1; }
+    [[ -f "$conf" ]] || { echo "$conf not found, run: ./install.sh qylock" >&2; exit 1; }
+    sudo sed -i -E "s/^Current=.*/Current=$t/" "$conf"
+    sudo touch /etc/sddm.conf.d/.qylock-user-choice # tells ./install.sh to keep this choice
+    echo "greeter theme set to $t (log out to see it)"
+    ;;
+esac
