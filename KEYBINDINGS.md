@@ -6,7 +6,7 @@ Same keys on every Linux install. `Super` is the modifier. i3 (Ubuntu, Kali) and
 | --- | --- | --- |
 | `Super+Return` | kitty | kitty |
 | `Super+Shift+Return` | ghostty | ghostty |
-| `Super+B` | Helium | Helium |
+| `Super+B` | Brave (Firefox fallback) | Brave (Firefox fallback) |
 | `Super+E` | Thunar | Thunar |
 | `Super+Space`, `Super+D` | rofi launcher | Vicinae |
 | `Super+Shift+D` | dmenu run | Noctalia launcher |

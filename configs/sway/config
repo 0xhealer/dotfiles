@@ -1,7 +1,7 @@
 set $mod Mod4
 set $term kitty
 set $alt_term ghostty
-set $browser sh -c 'for b in helium-browser helium helium-bin; do command -v "$b" >/dev/null && exec "$b"; done; exec xdg-open about:blank'
+set $browser sh -c 'for b in brave-browser brave brave-bin firefox firefox-esr; do command -v "$b" >/dev/null && exec "$b"; done; exec xdg-open about:blank'
 set $files thunar
 set $noctalia sh -c 'exec "$HOME/.local/bin/noctalia"'
 
