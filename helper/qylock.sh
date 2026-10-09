@@ -103,3 +103,50 @@ install_qylock() {
   log_ok "qylock themes installed (${qylock_themes[*]}), default $(qylock_choose_theme)"
   return 0
 }
+
+# Does the SDDM greeter load this theme? Runs it in test mode for a few seconds in the current desktop
+# session (a window flashes up). Returns 0 loads fine, 1 broken (output kept in $sddm_check_log),
+# 2 cannot check (no Qt6 greeter, or no graphical session such as ssh or a tty).
+sddm_theme_check() {
+  local theme="$1" rc
+  local greeter
+  greeter="$(command -v sddm-greeter-qt6 || true)"
+  [[ -n "$greeter" ]] || { [[ -x /usr/lib/sddm/sddm-greeter-qt6 ]] && greeter=/usr/lib/sddm/sddm-greeter-qt6; }
+  [[ -n "$greeter" ]] || return 2
+  [[ -n "${WAYLAND_DISPLAY:-}${DISPLAY:-}" ]] || return 2
+  [[ -f "$qylock_themes_dir/$theme/Main.qml" ]] || { sddm_check_log="theme '$theme' has no Main.qml"; return 1; }
+  sddm_check_log="$(timeout 6 "$greeter" --test-mode --theme "$qylock_themes_dir/$theme" 2>&1)"
+  rc=$?
+  # a healthy greeter keeps running until timeout kills it (124); a crash or a QML error is a failure
+  if ((rc != 0 && rc != 124)); then return 1; fi
+  if grep -qiE 'is not installed|is not a type|cannot load|failed to load|ReferenceError|TypeError|unable to assign|Type .* unavailable' <<<"$sddm_check_log"; then
+    return 1
+  fi
+  return 0
+}
+
+# Decide whether it is safe to point the greeter at $1. A black login screen is much worse than the
+# default one, so an unverified or broken theme is not applied (DOTS_SDDM_FORCE=1 overrides).
+# Returns 0 to apply, 1 to leave the distro default in place (and removes our config).
+sddm_gate() {
+  local theme="$1" verdict=0
+  [[ "$DOTS_FAMILY" == debian ]] && return 0
+  is_dry && return 0
+  sddm_theme_check "$theme" || verdict=$?
+  case "$verdict" in
+    0) log_ok "SDDM greeter loads theme '$theme'"; return 0 ;;
+    1)
+      log_warn "SDDM theme '$theme' failed to load, leaving the default login screen. Greeter output:"
+      printf '%s\n' "$sddm_check_log" | head -15 | sed 's/^/    /'
+      ;;
+    2)
+      if [[ "${DOTS_SDDM_FORCE:-0}" == 1 ]]; then
+        log_warn "cannot verify theme '$theme' (no graphical session), applying it because DOTS_SDDM_FORCE=1"
+        return 0
+      fi
+      log_warn "cannot verify theme '$theme' (run this from a terminal inside your desktop), leaving the default login screen"
+      ;;
+  esac
+  sudo_run rm -f /etc/sddm.conf.d/zz-dotfiles.conf
+  return 1
+}
