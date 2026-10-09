@@ -1,5 +1,4 @@
-// every window is slightly translucent; ghostty and kitty set their own background opacity
+// every window, terminals included, is slightly translucent (kitty and ghostty are opaque internally on niri)
 window-rule {
-    exclude app-id=r#"^(com\.mitchellh\.ghostty|kitty)$"#
     opacity 0.85
 }
