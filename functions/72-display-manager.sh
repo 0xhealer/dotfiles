@@ -72,7 +72,7 @@ Current=$theme"
 
 if [[ "$DOTS_FAMILY" != debian ]]; then
   pkg_install sddm
-  [[ "$DOTS_FAMILY" == fedora ]] && pkg_install sddm-x11 xorg-x11-server-Xorg xorg-x11-xinit xorg-x11-drv-libinput
+  fedora_x11_greeter
   if ! install_greeter && [[ "$DOTS_FAMILY" == fedora ]]; then
     log_warn "SDDM greeter could not be verified, keeping the current display manager (GDM). Run from a terminal inside your desktop, or DOTS_SDDM_FORCE=1 to override"
     exit 0
