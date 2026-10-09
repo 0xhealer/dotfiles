@@ -56,6 +56,8 @@ alias gclone='git clone'
 
 alias v='nvim'
 alias vv='nvim .'
+alias vim='nvim'
+alias vi='nvim'
 alias e='micro'
 alias n='nano'
 alias c='clear'
@@ -99,3 +101,16 @@ alias -g J='| jq'
 
 command -v code-insiders >/dev/null 2>&1 && alias code='code-insiders'
 alias treesitter='tree-sitter'
+
+# docker compose (run inside a compose project, or use start-homelab)
+alias dcu='docker compose up -d'
+alias dcd='docker compose down'
+alias dcr='docker compose restart'
+alias dcp='docker compose ps'
+alias dcl='docker compose logs -f --tail=100'
+alias dcpull='docker compose pull'
+alias dcup='docker compose pull && docker compose up -d'
+
+start-homelab() { cd ~/containers/homelab && docker compose up -d "$@"; }
+stop-homelab() { cd ~/containers/homelab && docker compose down "$@"; }
+alias homelab='cd ~/containers/homelab'

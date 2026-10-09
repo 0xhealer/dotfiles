@@ -48,5 +48,15 @@ if ! has tree-sitter; then
   fi
 fi
 
+# vim is replaced by nvim (the vim/vi aliases point at it); vim-tiny / vim-minimal stay, the system needs a vi
+for p in vim vim-enhanced vim-gtk3 gvim; do
+  pkg_installed "$p" || continue
+  case "$DOTS_FAMILY" in
+    arch) sudo_run pacman -Rns --noconfirm "$p" || log_warn "could not remove $p" ;;
+    fedora) sudo_run dnf remove -y "$p" || log_warn "could not remove $p" ;;
+    debian) sudo_run apt-get remove -y "$p" || log_warn "could not remove $p" ;;
+  esac
+done
+
 link_config "$DOTS_ROOT/configs/nvim" "$HOME/.config/nvim"
 log_info "first launch of nvim downloads plugins, treesitter parsers and LSP servers"
