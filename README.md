@@ -60,7 +60,7 @@ assets/                    wallpapers
 
 ## Login screen themes (CachyOS and Fedora)
 
-`./install.sh qylock` installs the qylock SDDM theme `ninja_gaiden`. For more, run `DOTS_QYLOCK_THEMES="ninja_gaiden enfield pixel-sakura wuwa sword" ./install.sh qylock` (the first one is the default). Switch with `qylock-theme list`, `qylock-theme <name>` or `qylock-theme preview <name>`; a choice made that way survives re-running the installer. VMware keeps the plain dots theme.
+`./install.sh qylock` installs the qylock SDDM themes `sword` (default, animated) and `ninja_gaiden` (static fallback). For more, run `DOTS_QYLOCK_THEMES="sword ninja_gaiden enfield pixel-sakura wuwa" ./install.sh qylock` (the first one is the default). Switch with `qylock-theme list`, `qylock-theme <name>` or `qylock-theme preview <name>`; a choice made that way survives re-running the installer. VMware keeps the plain dots theme.
 
 ## Google Drive and Obsidian (Linux)
 

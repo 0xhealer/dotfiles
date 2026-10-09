@@ -6,10 +6,10 @@ qylock_repo="${DOTS_QYLOCK_REPO:-https://github.com/Darkkal44/qylock}"
 qylock_ref="${DOTS_QYLOCK_REF:-f6561e2ceae33f26e5e660742a5df2f725cbe514}"
 qylock_src="$HOME/.cache/dotfiles/qylock"
 qylock_themes_dir=/usr/share/sddm/themes
-# Themes to install. One by default (ninja_gaiden is a static image: no video, no codecs, least to go wrong);
-# for more: DOTS_QYLOCK_THEMES="ninja_gaiden enfield pixel-sakura wuwa sword" ./install.sh qylock
+# Themes to install. Default is sword (animated, needs the video codecs); ninja_gaiden (static) is kept as a fallback;
+# for more: DOTS_QYLOCK_THEMES="sword ninja_gaiden enfield pixel-sakura wuwa" ./install.sh qylock
 # switch later with: qylock-theme <name>
-read -r -a qylock_themes <<<"${DOTS_QYLOCK_THEMES:-ninja_gaiden}"
+read -r -a qylock_themes <<<"${DOTS_QYLOCK_THEMES:-sword ninja_gaiden}"
 qylock_default="${DOTS_QYLOCK_THEME:-${qylock_themes[0]}}"
 case " ${qylock_themes[*]} " in
   *" $qylock_default "*) ;;
