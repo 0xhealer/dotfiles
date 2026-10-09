@@ -102,8 +102,8 @@ Type=notify
 ExecStartPre=/usr/bin/mkdir -p $mount_dir
 ExecStart=$rclone_bin mount $remote: $mount_dir \\
   --vfs-cache-mode full --vfs-cache-max-size 5G --vfs-cache-max-age 168h \\
-  --vfs-write-back 5s --dir-cache-time 5m --poll-interval 30s \\
-  --drive-pacer-min-sleep 10ms --log-level NOTICE
+  --vfs-write-back 5s --dir-cache-time 72h --poll-interval 30s --vfs-refresh \\
+  --drive-pacer-min-sleep 10ms --drive-pacer-burst 200 --transfers 8 --log-level NOTICE
 ExecStop=$fuse_umount -u $mount_dir
 Restart=on-failure
 RestartSec=10
