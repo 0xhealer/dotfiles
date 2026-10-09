@@ -6,9 +6,15 @@ qylock_repo="${DOTS_QYLOCK_REPO:-https://github.com/Darkkal44/qylock}"
 qylock_ref="${DOTS_QYLOCK_REF:-f6561e2ceae33f26e5e660742a5df2f725cbe514}"
 qylock_src="$HOME/.cache/dotfiles/qylock"
 qylock_themes_dir=/usr/share/sddm/themes
-# installed themes; the first run's default is ninja_gaiden, switch later with: qylock-theme <name>
-qylock_themes=(ninja_gaiden enfield pixel-sakura wuwa sword)
-qylock_default="${DOTS_QYLOCK_THEME:-ninja_gaiden}"
+# Themes to install. One by default (ninja_gaiden is a static image: no video, no codecs, least to go wrong);
+# for more: DOTS_QYLOCK_THEMES="ninja_gaiden enfield pixel-sakura wuwa sword" ./install.sh qylock
+# switch later with: qylock-theme <name>
+read -r -a qylock_themes <<<"${DOTS_QYLOCK_THEMES:-ninja_gaiden}"
+qylock_default="${DOTS_QYLOCK_THEME:-${qylock_themes[0]}}"
+case " ${qylock_themes[*]} " in
+  *" $qylock_default "*) ;;
+  *) qylock_themes+=("$qylock_default") ;;
+esac
 
 is_vmware() { [[ "${DOTS_VIRT:-$(systemd-detect-virt 2>/dev/null || true)}" == vmware ]]; }
 have_qt6_greeter() { command -v sddm-greeter-qt6 >/dev/null 2>&1 || [[ -x /usr/lib/sddm/sddm-greeter-qt6 ]]; }
