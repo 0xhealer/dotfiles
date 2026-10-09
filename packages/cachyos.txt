@@ -46,12 +46,14 @@ gnome-keyring
 brightnessctl
 playerctl
 pavucontrol
-dolphin
 gwenview
+thunar
+thunar-archive-plugin
+gvfs
+tumbler
+ffmpegthumbnailer
 evince
-kio-extras
 kio-admin
-ffmpegthumbs
 kimageformats
 breeze-icons
 archlinux-xdg-menu

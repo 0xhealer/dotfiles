@@ -74,3 +74,7 @@ Google has no Linux client, so Drive is an rclone mount run as a systemd user se
 ## Brave debloat (Linux)
 
 `./install.sh brave-debloat` writes managed policies to `/etc/brave/policies/managed/dotfiles-debloat.json` (Chris Titus' winutil "Debloat Brave" set: Rewards, Wallet, VPN, Leo AI and stats ping off, plus P3A and metrics off) and makes Brave the default browser. Firefox is installed as the fallback. Undo with `sudo rm /etc/brave/policies/managed/dotfiles-debloat.json`; check `brave://policy`.
+
+## Japanese input
+
+`./install.sh japanese` installs fcitx5 + Mozc, sets the input env vars, starts fcitx5 with the session and prefers Japanese glyphs (Noto CJK JP). Re-login, then `Ctrl+Space` toggles Japanese input. Folders open in Thunar.

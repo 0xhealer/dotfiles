@@ -151,3 +151,5 @@ exec $noctalia
 exec sh -c 'command -v vmware-user-suid-wrapper >/dev/null 2>&1 && exec vmware-user-suid-wrapper'
 exec sh -c 'command -v spice-vdagent >/dev/null 2>&1 && exec spice-vdagent'
 exec ~/.local/bin/wallpaper-rotate
+
+exec --no-startup-id fcitx5 -d
