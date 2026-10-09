@@ -58,6 +58,10 @@ assets/                    wallpapers
 - Keybindings: [KEYBINDINGS.md](KEYBINDINGS.md)
 - `ghclone <repo>` and `ghcreate [name] [-p]` clone into and create repos under `~/workspace/github` (needs `gh auth login` once).
 
+## Login screen themes (CachyOS and Fedora)
+
+`./install.sh qylock` installs the qylock SDDM themes `ninja_gaiden` (default), `enfield`, `pixel-sakura`, `wuwa` and `sword`. Switch with `qylock-theme list`, `qylock-theme <name>` or `qylock-theme preview <name>`; a choice made that way survives re-running the installer. VMware keeps the plain dots theme.
+
 ## Google Drive and Obsidian (Linux)
 
 ```bash

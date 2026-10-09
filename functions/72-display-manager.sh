@@ -30,7 +30,7 @@ remove_virtual_keyboard() {
 
 install_greeter() {
   local theme=dots
-  install_qylock && theme=sword
+  install_qylock && theme="$(qylock_choose_theme)"
   sudo_run mkdir -p /etc/sddm.conf.d
   sudo_run rm -f /etc/sddm.conf.d/10-dotfiles.conf
   [[ "$DOTS_FAMILY" == debian ]] && remove_virtual_keyboard
