@@ -78,3 +78,7 @@ Google has no Linux client, so Drive is an rclone mount run as a systemd user se
 ## Japanese input
 
 `./install.sh japanese` installs fcitx5 + Mozc, sets the input env vars, starts fcitx5 with the session and prefers Japanese glyphs (Noto CJK JP). Re-login, then `Ctrl+Space` toggles Japanese input. Folders open in Thunar.
+
+## VMware Workstation Pro (Linux)
+
+Download `VMware-Workstation-Full-*.bundle` from support.broadcom.com (login needed, free for personal use) into `~/Downloads`, then `tools/vmware-workstation.sh` installs the build deps, the bundle, the patched kernel modules (mkubecek/vmware-host-modules) and the services. After a kernel update run `tools/vmware-workstation.sh modules`. Secure Boot must be off, the modules are unsigned.
