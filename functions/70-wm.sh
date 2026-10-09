@@ -137,8 +137,9 @@ setup_niri() {
   ensure_executable "$c/scripts/niri-transparency"
   link_config "$c/scripts/niri-transparency" "$HOME/.local/bin/niri-transparency"
   run bash "$c/scripts/niri-transparency" apply
-  ensure_executable "$c/scripts/qylock-theme"
+  ensure_executable "$c/scripts/qylock-theme" "$c/scripts/qylock-picker"
   link_config "$c/scripts/qylock-theme" "$HOME/.local/bin/qylock-theme"
+  link_config "$c/scripts/qylock-picker" "$HOME/.local/bin/qylock-picker"
   ensure_executable "$c/scripts/wallpaper-rotate"
   link_config "$c/scripts/wallpaper-rotate" "$HOME/.local/bin/wallpaper-rotate"
 
