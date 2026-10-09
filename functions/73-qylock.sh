@@ -16,7 +16,7 @@ log_step "qylock (SDDM themes)"
 source "$(dirname "${BASH_SOURCE[0]}")/../helper/qylock.sh"
 
 pkg_install sddm
-[[ "$DOTS_FAMILY" == fedora ]] && pkg_install sddm-x11 xorg-x11-server-Xorg xorg-x11-xinit xorg-x11-drv-libinput
+fedora_x11_greeter
 if install_qylock; then
   theme="$(qylock_choose_theme)"
   if sddm_gate "$theme"; then

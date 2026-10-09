@@ -150,3 +150,10 @@ sddm_gate() {
   sudo_run rm -f /etc/sddm.conf.d/zz-dotfiles.conf
   return 1
 }
+
+# Fedora: swap the Wayland greeter (sddm-wayland-generic, needs weston/kwin) for the X11 one.
+fedora_x11_greeter() {
+  [[ "$DOTS_FAMILY" == fedora ]] || return 0
+  if ! is_dry && rpm -q sddm-x11 >/dev/null 2>&1; then return 0; fi
+  sudo_run dnf install -y --allowerasing --setopt=strict=0 sddm-x11 xorg-x11-server-Xorg xorg-x11-xinit xorg-x11-drv-libinput
+}
