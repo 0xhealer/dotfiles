@@ -53,6 +53,8 @@ abbr -a gclone 'git clone'
 
 abbr -a v nvim
 abbr -a vv 'nvim .'
+alias vim nvim
+alias vi nvim
 alias e micro
 alias n nano
 abbr -a c clear
@@ -90,3 +92,21 @@ if type -q code-insiders
     alias code code-insiders
 end
 alias treesitter tree-sitter
+
+# docker compose (run inside a compose project, or use start-homelab)
+alias dcu 'docker compose up -d'
+alias dcd 'docker compose down'
+alias dcr 'docker compose restart'
+alias dcp 'docker compose ps'
+alias dcl 'docker compose logs -f --tail=100'
+alias dcpull 'docker compose pull'
+alias dcup 'docker compose pull; and docker compose up -d'
+alias homelab 'cd ~/containers/homelab'
+
+function start-homelab
+    cd ~/containers/homelab; and docker compose up -d $argv
+end
+
+function stop-homelab
+    cd ~/containers/homelab; and docker compose down $argv
+end

@@ -118,6 +118,8 @@ function gclone { git clone @args }
 # ============================================================================
 function v { nvim @args }
 function vv { nvim . }
+function vim { nvim @args }
+function vi { nvim @args }
 function e { micro @args }
 function n { nano @args }
 
@@ -175,3 +177,15 @@ function workspace { Set-Location ~/workspace; ls }
 
 Set-Alias -Name treesitter -Value tree-sitter
 Set-Alias -Name code -Value code-insiders
+
+# docker compose (run inside a compose project, or use start-homelab)
+function dcu { docker compose up -d @args }
+function dcd { docker compose down @args }
+function dcr { docker compose restart @args }
+function dcp { docker compose ps @args }
+function dcl { docker compose logs -f --tail=100 @args }
+function dcpull { docker compose pull @args }
+function dcup { docker compose pull; docker compose up -d }
+function homelab { Set-Location ~/containers/homelab }
+function start-homelab { Set-Location ~/containers/homelab; docker compose up -d @args }
+function stop-homelab { Set-Location ~/containers/homelab; docker compose down @args }
