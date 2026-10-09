@@ -130,7 +130,8 @@ sddm_theme_check() {
 # Returns 0 to apply, 1 to leave the distro default in place (and removes our config).
 sddm_gate() {
   local theme="$1" verdict=0
-  [[ "$DOTS_FAMILY" == debian ]] && return 0
+  # the gate exists for Fedora (SDDM there was not set up for a greeter); CachyOS ships a working SDDM
+  [[ "$DOTS_FAMILY" == fedora ]] || return 0
   is_dry && return 0
   sddm_theme_check "$theme" || verdict=$?
   case "$verdict" in

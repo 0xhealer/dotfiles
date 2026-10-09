@@ -24,10 +24,18 @@ if [[ "$DOTS_FAMILY" == arch && ! -f /boot/grub/grub.cfg ]]; then
   exit 0
 fi
 
+# GRUB cannot write grubenv on btrfs ("sparse file not allowed" at every boot), so no saved default there
+boot_fs="$(findmnt -no FSTYPE --target /boot 2>/dev/null || true)"
 tmp="$(mktemp)"
 cp "$grub_default" "$tmp"
 while IFS='=' read -r key value; do
   [[ -z "$key" ]] && continue
+  if [[ "$boot_fs" == btrfs ]]; then
+    case "$key" in
+      GRUB_DEFAULT) value=0 ;;
+      GRUB_SAVEDEFAULT) value=false ;;
+    esac
+  fi
   if grep -qE "^#?[[:space:]]*${key}=" "$tmp"; then
     sed -i -E "s|^#?[[:space:]]*${key}=.*|${key}=${value}|" "$tmp"
   else
