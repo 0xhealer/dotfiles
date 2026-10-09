@@ -96,6 +96,23 @@ setup_default_apps() {
   log_info "defaults: Thunar for folders, ghostty for terminals"
 }
 
+# On niri the compositor owns translucency (niri-transparency), so kitty and ghostty are made opaque
+# internally and follow the same window rule as every other app. i3 keeps the shared config as is.
+niri_terminal_opacity() {
+  is_dry && { printf '    [dry-run] kitty/ghostty: opaque, niri window rule handles transparency\n'; return 0; }
+  local f marker='# dotfiles-niri-opacity'
+  f="$HOME/.config/kitty/kitty.conf"
+  if [[ -f "$f" ]]; then
+    sed -i "/^$marker/,\$d" "$f"
+    printf '%s\nbackground_opacity 1.0\nbackground_blur 0\n' "$marker" >>"$f"
+  fi
+  f="$HOME/.config/ghostty/config"
+  if [[ -f "$f" ]]; then
+    sed -i "/^$marker/,\$d" "$f"
+    printf '%s\nbackground-opacity = 1\nbackground-blur = false\n' "$marker" >>"$f"
+  fi
+}
+
 setup_niri() {
   local c="$DOTS_ROOT/configs" ver tmp blur=0
 
@@ -136,6 +153,7 @@ setup_niri() {
   run cp -f "$c/niri/transparency-on.kdl" "$c/niri/transparency-off.kdl" "$c/niri/blur.kdl" "$HOME/.config/niri/transparency.d/"
   ensure_executable "$c/scripts/niri-transparency"
   link_config "$c/scripts/niri-transparency" "$HOME/.local/bin/niri-transparency"
+  niri_terminal_opacity
   run bash "$c/scripts/niri-transparency" apply
   ensure_executable "$c/scripts/qylock-theme" "$c/scripts/qylock-picker"
   link_config "$c/scripts/qylock-theme" "$HOME/.local/bin/qylock-theme"
