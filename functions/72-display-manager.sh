@@ -37,14 +37,6 @@ install_greeter() {
   if [[ -f /etc/sddm.conf ]] && ! is_dry; then
     sudo sed -i -E '/^[[:space:]]*(Current|InputMethod)=/d' /etc/sddm.conf
   fi
-  local display_server=""
-  [[ "$DOTS_FAMILY" == debian ]] && display_server="DisplayServer=x11
-"
-  write_root_file /etc/sddm.conf.d/zz-dotfiles.conf "[General]
-${display_server}InputMethod=compose
-
-[Theme]
-Current=$theme"
   sudo_run rm -rf /usr/share/sddm/themes/dots
   sudo_run mkdir -p /usr/share/sddm/themes/dots
   sudo_run cp "$DOTS_ROOT"/configs/sddm/dots/* /usr/share/sddm/themes/dots/
@@ -53,6 +45,23 @@ Current=$theme"
   fi
   sudo_run cp "$DOTS_ROOT/assets/wallpapers/001.jpg" /usr/share/sddm/themes/dots/background.jpg
   sudo_run chmod -R a+rX /usr/share/sddm/themes/dots
+
+  # try the qylock theme; if it does not load, fall back to dots; if that fails too, leave the distro default
+  if [[ "$theme" != dots ]] && ! sddm_gate "$theme"; then theme=dots; fi
+  if [[ "$theme" == dots ]] && ! sddm_gate dots; then
+    return 0
+  fi
+  # InputMethod=compose is only needed on Debian/Ubuntu (it avoids the virtual keyboard crash on X11)
+  local general=""
+  if [[ "$DOTS_FAMILY" == debian ]]; then
+    general="[General]
+DisplayServer=x11
+InputMethod=compose
+
+"
+  fi
+  write_root_file /etc/sddm.conf.d/zz-dotfiles.conf "${general}[Theme]
+Current=$theme"
 }
 
 if [[ "$DOTS_FAMILY" != debian ]]; then
