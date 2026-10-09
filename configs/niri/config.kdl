@@ -171,6 +171,7 @@ binds {
     Mod+Equal   { set-column-width "+5%"; }
     Mod+V       { toggle-window-floating; }
     Mod+T       { toggle-column-tabbed-display; }
+    Mod+Ctrl+L  { spawn "sh" "-c" "exec $HOME/.local/bin/qylock-picker"; }
     Mod+Shift+T { spawn "sh" "-c" "exec $HOME/.local/bin/niri-transparency toggle"; }
 
     Print      { screenshot; }

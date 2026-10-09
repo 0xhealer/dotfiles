@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Pick the SDDM login theme from a menu (bound to Mod+Ctrl+L in niri).
+# Menu: vicinae dmenu, else fuzzel, rofi, wofi or fzf in a terminal. The change needs root, so it
+# goes through pkexec when a polkit agent is running, otherwise through sudo in a terminal.
+set -uo pipefail
+
+dir=/usr/share/sddm/themes
+conf=/etc/sddm.conf.d/zz-dotfiles.conf
+known=(ninja_gaiden enfield pixel-sakura wuwa sword dots)
+notify() { command -v notify-send >/dev/null && notify-send "Login theme" "$1" || echo "$1"; }
+
+themes=()
+for t in "${known[@]}"; do [[ -f "$dir/$t/Main.qml" ]] && themes+=("$t"); done
+((${#themes[@]})) || { notify "no qylock themes installed, run ./install.sh qylock"; exit 1; }
+
+current="$(grep -h '^Current=' "$conf" 2>/dev/null | tail -1 | cut -d= -f2)"
+menu=()
+for t in "${themes[@]}"; do [[ "$t" == "$current" ]] && menu+=("$t (current)") || menu+=("$t"); done
+
+pick=""
+if command -v vicinae >/dev/null && vicinae dmenu --help >/dev/null 2>&1; then
+  pick="$(printf '%s\n' "${menu[@]}" | vicinae dmenu -p "Login theme" 2>/dev/null)"
+elif command -v fuzzel >/dev/null; then
+  pick="$(printf '%s\n' "${menu[@]}" | fuzzel --dmenu -p "Login theme: ")"
+elif command -v rofi >/dev/null; then
+  pick="$(printf '%s\n' "${menu[@]}" | rofi -dmenu -p "Login theme")"
+elif command -v wofi >/dev/null; then
+  pick="$(printf '%s\n' "${menu[@]}" | wofi --dmenu -p "Login theme")"
+elif command -v fzf >/dev/null && command -v kitty >/dev/null; then
+  exec kitty --title "Login theme" sh -c 'qylock-theme list; printf "theme: "; read -r t; [ -n "$t" ] && qylock-theme "$t"; sleep 2'
+else
+  notify "no menu program found (vicinae, fuzzel, rofi, wofi)"
+  exit 1
+fi
+
+pick="${pick%% *}"
+[[ -n "$pick" ]] || exit 0
+
+if pgrep -f 'polkit.*agent|polkit-gnome|polkit-kde|lxqt-policykit' >/dev/null 2>&1 && command -v pkexec >/dev/null; then
+  if pkexec sh -c "sed -i -E 's/^Current=.*/Current=$pick/' '$conf' && touch /etc/sddm.conf.d/.qylock-user-choice"; then
+    notify "login theme set to $pick"
+    exit 0
+  fi
+fi
+# no polkit agent: run the sudo version in a terminal
+for term in kitty ghostty; do
+  command -v "$term" >/dev/null || continue
+  exec "$term" -e sh -c "qylock-theme '$pick'; sleep 2"
+done
+notify "could not get root to change the theme, run: qylock-theme $pick"
