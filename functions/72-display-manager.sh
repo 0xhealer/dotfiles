@@ -49,7 +49,7 @@ install_greeter() {
   # try the qylock theme; if it does not load, fall back to dots; if that fails too, leave the distro default
   if [[ "$theme" != dots ]] && ! sddm_gate "$theme"; then theme=dots; fi
   if [[ "$theme" == dots ]] && ! sddm_gate dots; then
-    return 0
+    return 1
   fi
   # InputMethod=compose is only needed on Debian/Ubuntu (it avoids the virtual keyboard crash on X11)
   local general=""
@@ -59,6 +59,12 @@ DisplayServer=x11
 InputMethod=compose
 
 "
+  elif [[ "$DOTS_FAMILY" == fedora ]]; then
+    # Fedora ships GDM; SDDM's default Wayland greeter needs kwin, which is not installed. Use the X11 greeter.
+    general="[General]
+DisplayServer=x11
+
+"
   fi
   write_root_file /etc/sddm.conf.d/zz-dotfiles.conf "${general}[Theme]
 Current=$theme"
@@ -66,7 +72,11 @@ Current=$theme"
 
 if [[ "$DOTS_FAMILY" != debian ]]; then
   pkg_install sddm
-  install_greeter
+  [[ "$DOTS_FAMILY" == fedora ]] && pkg_install sddm-x11 xorg-x11-server-Xorg xorg-x11-xinit xorg-x11-drv-libinput
+  if ! install_greeter && [[ "$DOTS_FAMILY" == fedora ]]; then
+    log_warn "SDDM greeter could not be verified, keeping the current display manager (GDM). Run from a terminal inside your desktop, or DOTS_SDDM_FORCE=1 to override"
+    exit 0
+  fi
   sudo_run systemctl enable --force sddm.service
   if [[ "$(readlink -f /etc/systemd/system/display-manager.service 2>/dev/null)" != */sddm.service ]] && ! is_dry; then
     log_warn "display-manager.service does not point at sddm, check: systemctl status display-manager"
