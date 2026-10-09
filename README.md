@@ -71,3 +71,6 @@ tools/gdrive-obsidian.sh status
 
 Google has no Linux client, so Drive is an rclone mount run as a systemd user service (`rclone-gdrive.service`, full VFS cache so notes stay readable offline). The vault lives in `~/GoogleDrive/Obsidian`; Flatpak Obsidian is given access to the mount. Set `GDRIVE_CLIENT_ID` and `GDRIVE_CLIENT_SECRET` to use your own Google API client instead of rclone's shared one.
 
+## Brave debloat (Linux)
+
+`./install.sh brave-debloat` writes managed policies to `/etc/brave/policies/managed/dotfiles-debloat.json` (Chris Titus' winutil "Debloat Brave" set: Rewards, Wallet, VPN, Leo AI and stats ping off, plus P3A and metrics off) and makes Brave the default browser. Firefox is installed as the fallback. Undo with `sudo rm /etc/brave/policies/managed/dotfiles-debloat.json`; check `brave://policy`.

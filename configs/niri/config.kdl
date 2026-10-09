@@ -81,7 +81,7 @@ binds {
 
     Mod+Return       { spawn "ghostty"; }
     Mod+Shift+Return { spawn "kitty"; }
-    Mod+B { spawn "sh" "-c" "for b in helium-browser helium helium-bin; do command -v \"$b\" >/dev/null && exec \"$b\"; done; exec xdg-open about:blank"; }
+    Mod+B { spawn "sh" "-c" "for b in brave-browser brave brave-bin firefox firefox-esr; do command -v \"$b\" >/dev/null && exec \"$b\"; done; exec xdg-open about:blank"; }
     Mod+E { spawn "dolphin"; }
     Mod+Space       { spawn "sh" "-c" "if command -v vicinae >/dev/null; then exec vicinae toggle; else exec noctalia msg panel-toggle launcher; fi"; }
     Mod+D           { spawn "sh" "-c" "if command -v vicinae >/dev/null; then exec vicinae toggle; else exec noctalia msg panel-toggle launcher; fi"; }
