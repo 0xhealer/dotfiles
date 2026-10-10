@@ -1,4 +1,6 @@
 base-devel
+yay
+paru
 cmake
 gdb
 valgrind
