@@ -96,3 +96,8 @@ pulseview
 kicad
 adb
 fastboot
+
+# tools/: gdrive-obsidian (rclone mount) and vmware-workstation (module build, Secure Boot check)
+rclone
+fuse3
+mokutil

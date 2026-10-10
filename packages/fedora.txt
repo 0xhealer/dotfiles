@@ -85,3 +85,9 @@ stlink
 sigrok-cli
 pulseview
 kicad
+
+# tools/: gdrive-obsidian (rclone mount) and vmware-workstation (module build, Secure Boot check)
+rclone
+fuse3
+mokutil
+elfutils-libelf-devel

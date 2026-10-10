@@ -95,3 +95,10 @@ android-tools
 android-udev
 aur:arduino-ide-bin
 aur:android-studio
+
+# tools/: gdrive-obsidian (rclone mount) and vmware-workstation (module build, Secure Boot check)
+rclone
+fuse3
+mokutil
+lld
+llvm
