@@ -32,11 +32,46 @@ gpgkey=https://packages.microsoft.com/keys/microsoft.asc"
   sudo_run dnf install -y "$DOTS_CODE_BIN"
 }
 
+# fallback when the AUR package is broken: Microsoft's own tarball, no root needed
+install_vscode_tarball() {
+  local ch=stable dir="$HOME/.local/opt/$DOTS_CODE_BIN" tmp
+  [[ "$DOTS_CODE_BIN" == *insiders* ]] && ch=insider
+  if is_dry; then
+    printf '    [dry-run] download the %s tarball to %s\n' "$ch" "$dir"
+    return 0
+  fi
+  [[ "$(uname -m)" == x86_64 ]] || { log_warn "tarball fallback is x86_64 only"; return 1; }
+  tmp="$(mktemp -d)"
+  if curl -fsSL "https://code.visualstudio.com/sha/download?build=${ch}&os=linux-x64" | tar -xz -C "$tmp"; then
+    rm -rf "$dir" && mkdir -p "$(dirname "$dir")" "$HOME/.local/bin" "$HOME/.local/share/applications"
+    mv "$tmp"/VSCode-linux-x64 "$dir"
+    ln -sf "$dir/bin/$DOTS_CODE_BIN" "$HOME/.local/bin/$DOTS_CODE_BIN"
+    cat >"$HOME/.local/share/applications/$DOTS_CODE_BIN.desktop" <<D
+[Desktop Entry]
+Name=Visual Studio Code ($ch)
+Exec=$dir/$DOTS_CODE_BIN %F
+Icon=$dir/resources/app/resources/linux/code.png
+Type=Application
+Categories=Utility;TextEditor;Development;IDE;
+MimeType=text/plain;inode/directory;
+StartupWMClass=$DOTS_CODE_BIN
+D
+    export PATH="$HOME/.local/bin:$PATH"
+    log_ok "installed from the official tarball (updates: rerun this step)"
+  else
+    log_warn "could not download the VS Code tarball"
+  fi
+  rm -rf "$tmp"
+}
+
 if ! has "$DOTS_CODE_BIN"; then
   case "$DOTS_FAMILY" in
     debian) install_vscode_deb ;;
     fedora) install_vscode_rpm ;;
-    arch) log_warn "VS Code comes from the AUR (visual-studio-code-insiders-bin) in packages/cachyos.txt" ;;
+    arch)
+      log_warn "$DOTS_CODE_BIN missing: the AUR package failed or was skipped, using Microsoft's tarball"
+      install_vscode_tarball || true
+      ;;
   esac
 fi
 
