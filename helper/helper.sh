@@ -193,10 +193,19 @@ aur_install() {
   is_dry || aur_bootstrap
   local helper
   helper="$(aur_helper || printf 'paru')"
-  case "$helper" in
-    paru) run paru -S --needed --noconfirm --skipreview "$@" ;;
-    yay) run yay -S --needed --noconfirm --answerdiff None --answerclean None "$@" ;;
-  esac
+  _aur_run() {
+    case "$helper" in
+      paru) run paru -S --needed --noconfirm --skipreview "$@" ;;
+      yay) run yay -S --needed --noconfirm --answerdiff None --answerclean None "$@" ;;
+    esac
+  }
+  # one broken AUR package (bad upstream PKGBUILD) must not sink the rest: retry one by one
+  if ! _aur_run "$@"; then
+    local p failed=()
+    for p in "$@"; do _aur_run "$p" || failed+=("$p"); done
+    ((${#failed[@]})) && log_warn "AUR packages failed (usually a broken upstream PKGBUILD, retry later): ${failed[*]}"
+  fi
+  return 0
 }
 
 install_packages_from_file() {
