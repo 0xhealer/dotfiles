@@ -52,7 +52,15 @@ fi
 for p in vim vim-enhanced vim-gtk3 gvim; do
   pkg_installed "$p" || continue
   case "$DOTS_FAMILY" in
-    arch) sudo_run pacman -Rns --noconfirm "$p" || log_warn "could not remove $p" ;;
+    arch)
+      # something else needs it (cachyos-zsh-config pulls vim): keep the package, the vim alias already points at nvim
+      req="$(pacman -Qi "$p" 2>/dev/null | sed -n 's/^Required By *: *//p')"
+      if [[ -n "$req" && "$req" != None ]]; then
+        log_info "keeping $p, required by: $req (the vim alias runs nvim)"
+      else
+        sudo_run pacman -Rns --noconfirm "$p" || log_warn "could not remove $p"
+      fi
+      ;;
     fedora) sudo_run dnf remove -y "$p" || log_warn "could not remove $p" ;;
     debian) sudo_run apt-get remove -y "$p" || log_warn "could not remove $p" ;;
   esac

@@ -156,7 +156,11 @@ pkg_install() {
 
   case "$DOTS_FAMILY" in
     debian) sudo_run env DEBIAN_FRONTEND=noninteractive apt-get install -y -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Dpkg::Options::=--force-confold "${pkgs[@]}" ;;
-    arch) sudo_run pacman -S --needed --noconfirm "${pkgs[@]}" ;;
+    arch)
+      # a mirror 404 or timeout is usually transient: refresh the db and retry once
+      sudo_run pacman -S --needed --noconfirm "${pkgs[@]}" ||
+        { is_dry || { log_warn "pacman failed, refreshing and retrying once"; sudo pacman -Sy --noconfirm >/dev/null 2>&1 || true; }
+          sudo_run pacman -S --needed --noconfirm "${pkgs[@]}"; } ;;
     fedora) sudo_run dnf install -y --setopt=retries=5 --setopt=timeout=30 "$(dnf_skip_flag)" "${pkgs[@]}" ;;
   esac
 }
@@ -201,6 +205,10 @@ aur_install() {
   }
   # one broken AUR package (bad upstream PKGBUILD) must not sink the rest: retry one by one
   if ! _aur_run "$@"; then
+    if (($# == 1)); then
+      log_warn "AUR package failed (usually a broken upstream PKGBUILD or a conflict, retry later): $1"
+      return 0
+    fi
     local p failed=()
     for p in "$@"; do _aur_run "$p" || failed+=("$p"); done
     ((${#failed[@]})) && log_warn "AUR packages failed (usually a broken upstream PKGBUILD, retry later): ${failed[*]}"
