@@ -78,3 +78,8 @@ libfuse2t64
 xdg-utils
 htop
 dconf-cli
+
+# tools/: gdrive-obsidian (rclone mount) and vmware-workstation (module build, Secure Boot check)
+rclone
+fuse3
+mokutil
