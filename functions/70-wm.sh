@@ -36,9 +36,25 @@ render_niri_config() {
   sed -e '/^\/\/ @BLUR@/{s|.*|include "transparency.kdl"|}' -e "s|^// @NOCTALIA@|$inc|" "$src" >"$out"
 }
 
+# validate in a scratch dir: the rendered config includes noctalia.kdl and transparency.kdl, which
+# niri resolves next to the config file, so stub them or every check fails on the missing include
 niri_valid() {
   has niri || return 0
-  niri validate -c "$1" >/dev/null 2>&1
+  local d out rc=0
+  d="$(mktemp -d)"
+  cp "$1" "$d/config.kdl"
+  : >"$d/noctalia.kdl"
+  if [[ -f "$HOME/.config/niri/transparency.kdl" ]]; then
+    cp "$HOME/.config/niri/transparency.kdl" "$d/transparency.kdl"
+  elif [[ -f "$DOTS_ROOT/configs/niri/transparency-on.kdl" ]]; then
+    cp "$DOTS_ROOT/configs/niri/transparency-on.kdl" "$d/transparency.kdl"
+  else
+    : >"$d/transparency.kdl"
+  fi
+  out="$(niri validate -c "$d/config.kdl" 2>&1)" || rc=$?
+  ((rc)) && NIRI_VALIDATE_ERR="$(printf '%s' "$out" | sed 's/\x1b\[[0-9;]*m//g' | head -n 6)"
+  rm -rf "$d"
+  return "$rc"
 }
 
 setup_noctalia_theming() {
@@ -139,7 +155,9 @@ setup_niri() {
   fi
   render_niri_config "$tmp"
   if ! niri_valid "$tmp"; then
-    log_warn "niri validate failed for the rendered config; installing it anyway, check with: niri validate"
+    log_warn "niri validate failed for the rendered config; installing it anyway"
+    printf '%s\n' "${NIRI_VALIDATE_ERR:-}" | sed 's/^/    /'
+
   fi
   copy_config "$tmp" "$HOME/.config/niri/config.kdl"
   rm -f "$tmp"

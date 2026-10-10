@@ -81,7 +81,12 @@ link_config "$DOTS_ROOT/configs/vscode/keybindings.json" "$user_dir/keybindings.
 
 if has "$DOTS_CODE_BIN"; then
   while IFS= read -r ext; do
-    run "$DOTS_CODE_BIN" --install-extension "$ext" --force >/dev/null || log_warn "extension failed: $ext"
+    ok=0
+    for _try in 1 2 3; do
+      if NODE_OPTIONS=--no-deprecation run "$DOTS_CODE_BIN" --install-extension "$ext" --force >/dev/null 2>&1; then ok=1; break; fi
+      sleep 3
+    done
+    ((ok)) || log_warn "extension failed after 3 tries: $ext"
   done < <(pkg_list "$DOTS_ROOT/packages/vscode-extensions.txt")
 else
   log_warn "$DOTS_CODE_BIN not found, extensions not installed"

@@ -47,9 +47,11 @@ if ! is_dry; then
     sudo virsh -c qemu:///system net-define /usr/share/libvirt/networks/default.xml || log_warn "could not define default network"
   fi
   sudo virsh -c qemu:///system net-autostart default >/dev/null 2>&1 || log_warn "could not autostart default network"
-  sudo virsh -c qemu:///system net-start default >/dev/null 2>&1 ||
-    sudo virsh -c qemu:///system net-info default 2>/dev/null | grep -q 'Active:.*yes' ||
-    log_warn "default network not running (check dnsmasq and firewall); see: sudo virsh net-start default"
+  if ! sudo virsh -c qemu:///system net-info default 2>/dev/null | grep -q 'Active:.*yes'; then
+    if ! net_err="$(sudo virsh -c qemu:///system net-start default 2>&1)"; then
+      log_warn "default network not running: ${net_err//$'\n'/ }"
+    fi
+  fi
 fi
 # Docker sets the FORWARD policy to DROP, which silences VMs on libvirt's NAT bridge; let virbr0 through
 write_root_file /etc/systemd/system/virbr0-docker.service "[Unit]
