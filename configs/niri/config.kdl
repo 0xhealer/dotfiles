@@ -175,6 +175,8 @@ binds {
     Mod+T       { toggle-column-tabbed-display; }
     Mod+Ctrl+L  { spawn "sh" "-c" "exec $HOME/.local/bin/qylock-picker"; }
     Mod+Shift+T { spawn "sh" "-c" "exec $HOME/.local/bin/niri-transparency toggle"; }
+    // block or allow Teams using the microphone (teams-mic)
+    Mod+Ctrl+M  { spawn "sh" "-c" "exec $HOME/.local/bin/teams-mic toggle"; }
 
     Print      { screenshot; }
     Ctrl+Print { screenshot-screen; }

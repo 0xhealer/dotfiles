@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+# teams-mic [toggle|block|allow|status]
+# Detaches Teams from the real microphone by moving its capture streams onto a silent
+# virtual source, so other video apps can use the mic. While blocked a small watcher
+# keeps re-routing any new Teams stream.
+set -u
+STATE="${XDG_RUNTIME_DIR:-/tmp}/teams-mic"
+SRC=teams_nomic
+
+note() { command -v notify-send >/dev/null && notify-send -a teams-mic -i microphone-sensitivity-muted "Teams mic" "$1"; echo "$1"; }
+
+teams_outputs() {
+  pactl -f json list source-outputs 2>/dev/null | python3 -c '
+import json,sys,os
+try: d=json.load(sys.stdin)
+except Exception: sys.exit()
+for o in d:
+    p=o.get("properties",{})
+    pid=p.get("application.process.id","")
+    cmd=""
+    try: cmd=open("/proc/%s/cmdline"%pid).read().replace("\0"," ")
+    except Exception: pass
+    blob=(p.get("application.name","")+" "+p.get("application.process.binary","")+" "+cmd).lower()
+    if "teams" in blob: print(o["index"])
+'
+}
+
+reroute() { local i; for i in $(teams_outputs); do pactl move-source-output "$i" "$SRC" 2>/dev/null; done; }
+
+watcher_running() { [[ -f $STATE.pid ]] && kill -0 "$(cat "$STATE.pid")" 2>/dev/null; }
+
+block() {
+  pactl list short sources | grep -q "$SRC" ||
+    pactl load-module module-null-sink media.class=Audio/Source/Virtual sink_name=$SRC \
+      source_properties=device.description=Teams-no-mic >/dev/null
+  reroute
+  if ! watcher_running; then
+    ( pactl subscribe | while read -r ev; do
+        case $ev in *"source-output"*) reroute ;; esac
+      done ) >/dev/null 2>&1 &
+    echo $! >"$STATE.pid"
+  fi
+  : >"$STATE"
+  note "Teams mic BLOCKED"
+}
+
+allow() {
+  if watcher_running; then pkill -P "$(cat "$STATE.pid")" 2>/dev/null; kill "$(cat "$STATE.pid")" 2>/dev/null; fi
+  rm -f "$STATE" "$STATE.pid"
+  local dflt i
+  dflt=$(pactl get-default-source)
+  for i in $(teams_outputs); do pactl move-source-output "$i" "$dflt" 2>/dev/null; done
+  note "Teams mic ALLOWED"
+}
+
+case "${1:-toggle}" in
+  block) block ;;
+  allow) allow ;;
+  status) [[ -f $STATE ]] && echo blocked || echo allowed ;;
+  toggle) [[ -f $STATE ]] && allow || block ;;
+  *) echo "usage: teams-mic [toggle|block|allow|status]"; exit 2 ;;
+esac
