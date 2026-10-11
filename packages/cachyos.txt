@@ -102,3 +102,5 @@ fuse3
 mokutil
 lld
 llvm
+libsecret
+seahorse

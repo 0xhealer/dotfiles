@@ -91,3 +91,5 @@ rclone
 fuse3
 mokutil
 elfutils-libelf-devel
+libsecret
+seahorse

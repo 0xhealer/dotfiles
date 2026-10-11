@@ -61,6 +61,7 @@ hotkey-overlay {
     skip-at-startup
 }
 
+spawn-at-startup "gnome-keyring-daemon" "--start" "--components=secrets"
 spawn-at-startup "fcitx5" "-d"
 spawn-at-startup "noctalia"
 spawn-at-startup "sh" "-c" "exec $HOME/.local/bin/wallpaper-rotate"
