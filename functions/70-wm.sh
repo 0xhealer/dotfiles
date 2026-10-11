@@ -171,6 +171,8 @@ setup_niri() {
   run cp -f "$c/niri/transparency-on.kdl" "$c/niri/transparency-off.kdl" "$c/niri/blur.kdl" "$HOME/.config/niri/transparency.d/"
   ensure_executable "$c/scripts/niri-transparency"
   link_config "$c/scripts/niri-transparency" "$HOME/.local/bin/niri-transparency"
+  ensure_executable "$c/scripts/teams-mic"
+  link_config "$c/scripts/teams-mic" "$HOME/.local/bin/teams-mic"
   niri_terminal_opacity
   run bash "$c/scripts/niri-transparency" apply
   ensure_executable "$c/scripts/qylock-theme" "$c/scripts/qylock-picker"
