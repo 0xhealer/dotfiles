@@ -83,3 +83,7 @@ dconf-cli
 rclone
 fuse3
 mokutil
+gnome-keyring
+libsecret-1-0
+libsecret-tools
+seahorse
