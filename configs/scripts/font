@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
-# One switch for the monospace font of every app.   font ubuntu-mono | jetbrains-mono | hack | list | status | apply
+# One switch for the monospace font of every app.   font ubuntu | jetbrains-mono | hack | list | status | apply
 # Remembers the choice in ~/.config/theme/font and rewrites kitty, ghostty, Noctalia, GTK/GNOME and VS Code.
 # `apply` re-applies the saved choice (the installer calls it after copying the configs).
 set -Eeuo pipefail
 cfg="$HOME/.config/theme"
-default=ubuntu-mono
+default=ubuntu
 
 family() { # key -> font family as fontconfig knows it
   case "$1" in
-    ubuntu-mono) echo "UbuntuMono Nerd Font" ;;
+    ubuntu) echo "Ubuntu Nerd Font" ;;
     jetbrains-mono) echo "JetBrainsMono Nerd Font" ;;
     hack) echo "Hack Nerd Font" ;;
     *) return 1 ;;
   esac
 }
-keys="ubuntu-mono jetbrains-mono hack"
+keys="ubuntu jetbrains-mono hack"
 
 current() { local m="$default"; [[ -f "$cfg/font" ]] && m="$(<"$cfg/font")"; family "$m" >/dev/null && echo "$m" || echo "$default"; }
 
@@ -55,9 +55,9 @@ apply() {
 }
 
 case "${1:-status}" in
-  ubuntu-mono | jetbrains-mono | hack) apply "$1" ;;
+  ubuntu | jetbrains-mono | hack) apply "$1" ;;
   apply) apply "$(current)" ;;
   list) for k in $keys; do echo "$k  $(family "$k")"; done ;;
   status) echo "font: $(current) ($(family "$(current)"))" ;;
-  *) echo "usage: font ubuntu-mono | jetbrains-mono | hack | list | status | apply" >&2; exit 2 ;;
+  *) echo "usage: font ubuntu | jetbrains-mono | hack | list | status | apply" >&2; exit 2 ;;
 esac

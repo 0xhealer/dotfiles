@@ -129,4 +129,4 @@ Prefix is `Ctrl+A` (`tmux` is aliased to `tmux -u`).
 | --- | --- |
 | `x <archive>` / `extract` | unpack zip, 7z, rar, tar.*, zst and more |
 | `compress <name>.<ext> <files>` | create an archive by extension |
-| `font ubuntu-mono \| jetbrains-mono \| hack` | switch the monospace font in kitty, VS Code, Noctalia and GTK |
+| `font ubuntu \| jetbrains-mono \| hack` | switch the monospace font in kitty, VS Code, Noctalia and GTK |
