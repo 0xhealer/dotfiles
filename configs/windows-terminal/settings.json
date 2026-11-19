@@ -97,10 +97,10 @@
   "profiles": {
     "defaults": {
       "antialiasingMode": "cleartype",
-      "colorScheme": "Catppuccin Mocha",
+      "colorScheme": "Rose Pine Moon",
       "cursorShape": "bar",
       "font": {
-        "face": "JetBrainsMono Nerd Font, Hack Nerd Font",
+        "face": "UbuntuMono Nerd Font, JetBrainsMono Nerd Font, Hack Nerd Font",
         "size": 12
       },
       "opacity": 85,
@@ -110,7 +110,6 @@
     },
     "list": [
       {
-        "commandline": "%ProgramFiles%\\PowerShell\\7\\pwsh.exe -NoLogo",
         "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
         "hidden": false,
         "name": "PowerShell",
@@ -132,27 +131,27 @@
   },
   "schemes": [
     {
-      "background": "#1E1E2E",
-      "black": "#45475A",
-      "blue": "#89B4FA",
-      "brightBlack": "#585B70",
-      "brightBlue": "#89B4FA",
-      "brightCyan": "#94E2D5",
-      "brightGreen": "#A6E3A1",
-      "brightPurple": "#F5C2E7",
-      "brightRed": "#F38BA8",
-      "brightWhite": "#A6ADC8",
-      "brightYellow": "#F9E2AF",
-      "cursorColor": "#F5E0DC",
-      "cyan": "#94E2D5",
-      "foreground": "#CDD6F4",
-      "green": "#A6E3A1",
-      "name": "Catppuccin Mocha",
-      "purple": "#F5C2E7",
-      "red": "#F38BA8",
-      "selectionBackground": "#585B70",
-      "white": "#BAC2DE",
-      "yellow": "#F9E2AF"
+      "name": "Rose Pine Moon",
+      "background": "#232136",
+      "foreground": "#E0DEF4",
+      "cursorColor": "#E0DEF4",
+      "selectionBackground": "#44415A",
+      "black": "#393552",
+      "red": "#EB6F92",
+      "green": "#3E8FB0",
+      "yellow": "#F6C177",
+      "blue": "#9CCFD8",
+      "purple": "#C4A7E7",
+      "cyan": "#EA9A97",
+      "white": "#E0DEF4",
+      "brightBlack": "#6E6A86",
+      "brightRed": "#EB6F92",
+      "brightGreen": "#3E8FB0",
+      "brightYellow": "#F6C177",
+      "brightBlue": "#9CCFD8",
+      "brightPurple": "#C4A7E7",
+      "brightCyan": "#EA9A97",
+      "brightWhite": "#E0DEF4"
     }
   ],
   "showTabsInTitlebar": true,

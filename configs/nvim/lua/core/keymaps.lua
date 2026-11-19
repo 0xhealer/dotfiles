@@ -149,12 +149,6 @@ end
 local Snacks = require("snacks")
 local curated_colorschemes = {
 	["rose-pine"] = true,
-	["catppuccin"] = true,
-	["tokyonight"] = true,
-	["gruvbox"] = true,
-	["kanagawa"] = true,
-	["solarized-osaka"] = true,
-	["horizon"] = true,
 }
 keymap("n", "<leader>uc", function()
 	local items = vim.tbl_filter(function(item)

@@ -13,8 +13,6 @@ sharkdp.fd
 sharkdp.bat
 BurntSushi.ripgrep.MSVC
 Fastfetch-cli.Fastfetch
-LLVM.LLVM
-BrechtSanders.WinLibs.POSIX.UCRT
 OpenJS.NodeJS.LTS
 Python.Python.3.13
 GoLang.Go
@@ -37,7 +35,6 @@ VideoLAN.VLC
 Obsidian.Obsidian
 Foxit.FoxitReader
 Microsoft.PowerToys
-Microsoft.VCRedist.2015+.x64
 RevoUninstaller.RevoUninstaller
 Google.GoogleDrive
 HandBrake.HandBrake
@@ -47,9 +44,9 @@ AppWork.JDownloader
 Oracle.JDK.17
 WinSCP.WinSCP
 
+# C/C++ toolchain (MSVC, clang, Windows SDK, CMake, Ninja, VC runtime) comes from modules/05-buildtools.ps1
+
 # cli parity with the Linux lists
 JesseDuffield.lazygit
 jqlang.jq
-Kitware.CMake
-JernejSimoncic.Wget
 Google.PlatformTools

@@ -1,6 +1,5 @@
 # id|name|command|shortcut
 dots-terminal|Terminal|kitty|Meta+Return
-dots-ghostty|Ghostty|ghostty|Meta+Shift+Return
 dots-browser|Browser|sh -c "exec $HOME/.local/bin/browser-open"|Meta+B
 dots-files|Files|sh -c "exec xdg-open \"$HOME\""|Meta+E
 dots-launcher|Launcher|krunner|Meta+Space

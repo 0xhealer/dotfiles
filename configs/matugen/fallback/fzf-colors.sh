@@ -1,1 +1,1 @@
-export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS:+$FZF_DEFAULT_OPTS }--color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8,fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc,marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8,border:#45475a"
+export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS:+$FZF_DEFAULT_OPTS }--color=bg+:#44415A,bg:#232136,spinner:#EA9A97,hl:#C4A7E7,fg:#E0DEF4,header:#C4A7E7,info:#9CCFD8,pointer:#C4A7E7,marker:#EA9A97,fg+:#E0DEF4,prompt:#C4A7E7,hl+:#C4A7E7,border:#393552"

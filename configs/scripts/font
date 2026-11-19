@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# One switch for the monospace font of every app.   font ubuntu-mono | jetbrains-mono | hack | list | status | apply
+# Remembers the choice in ~/.config/theme/font and rewrites kitty, ghostty, Noctalia, GTK/GNOME and VS Code.
+# `apply` re-applies the saved choice (the installer calls it after copying the configs).
+set -Eeuo pipefail
+cfg="$HOME/.config/theme"
+default=ubuntu-mono
+
+family() { # key -> font family as fontconfig knows it
+  case "$1" in
+    ubuntu-mono) echo "UbuntuMono Nerd Font" ;;
+    jetbrains-mono) echo "JetBrainsMono Nerd Font" ;;
+    hack) echo "Hack Nerd Font" ;;
+    *) return 1 ;;
+  esac
+}
+keys="ubuntu-mono jetbrains-mono hack"
+
+current() { local m="$default"; [[ -f "$cfg/font" ]] && m="$(<"$cfg/font")"; family "$m" >/dev/null && echo "$m" || echo "$default"; }
+
+# rewrite the value of "key" lines in a file in place, only if the file exists
+sub() { local f="$1" re="$2" rep="$3"; [[ -f "$f" ]] && sed -i -E "s|$re|$rep|" "$f" || true; }
+
+apply() {
+  local key="$1" fam
+  fam="$(family "$key")"
+  mkdir -p "$cfg"
+  printf '%s\n' "$key" >"$cfg/font"
+
+  # kitty.conf and ghostty/config include these files
+  printf 'font_family      family="%s"\nbold_font        auto\nitalic_font      auto\nbold_italic_font auto\n' "$fam" >"$cfg/kitty-font.conf"
+  printf 'font-family = %s\n' "$fam" >"$cfg/ghostty-font"
+  pkill -USR1 -x kitty 2>/dev/null || true # kitty reloads its config
+
+  # Noctalia: the dotfiles.toml copy and, if the settings window pinned one, its override
+  sub "$HOME/.config/noctalia/dotfiles.toml" '^([[:space:]]*font_family = ).*' "\\1\"$fam\""
+  sub "${XDG_STATE_HOME:-$HOME/.local/state}/noctalia/settings.toml" '^([[:space:]]*font_family = ).*' "\\1\"$fam\""
+
+  # GTK/GNOME apps
+  command -v gsettings >/dev/null && gsettings set org.gnome.desktop.interface monospace-font-name "$fam 12" 2>/dev/null || true
+
+  # VS Code (stable and insiders)
+  local f
+  for f in "$HOME/.config/Code/User/settings.json" "$HOME/.config/Code - Insiders/User/settings.json"; do
+    sub "$f" '("editor\.fontFamily"[[:space:]]*:[[:space:]]*).*' "\\1\"'$fam', monospace\","
+    sub "$f" '("terminal\.integrated\.fontFamily"[[:space:]]*:[[:space:]]*).*' "\\1\"'$fam'\","
+  done
+
+  # other configs that name a font directly are only touched when present
+  sub "$HOME/.config/rofi/config.rasi" '(font: ")[^"]*(")' "\\1$fam 11\\2"
+  sub "$HOME/.config/dunst/dunstrc" '^([[:space:]]*font = ).*' "\\1$fam 10"
+  sub "$HOME/.config/i3/config" '^(font pango:).*' "\\1$fam 10"
+  sub "$HOME/.config/sway/config" '^(font pango:).*' "\\1$fam 10"
+  echo "font: $key ($fam)"
+}
+
+case "${1:-status}" in
+  ubuntu-mono | jetbrains-mono | hack) apply "$1" ;;
+  apply) apply "$(current)" ;;
+  list) for k in $keys; do echo "$k  $(family "$k")"; done ;;
+  status) echo "font: $(current) ($(family "$(current)"))" ;;
+  *) echo "usage: font ubuntu-mono | jetbrains-mono | hack | list | status | apply" >&2; exit 2 ;;
+esac

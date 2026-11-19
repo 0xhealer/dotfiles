@@ -92,10 +92,10 @@ setup_default_apps() {
   run mkdir -p "$HOME/.config/environment.d"
   if ! is_dry; then
     {
-      printf 'TERMINAL=ghostty\n'
+      printf 'TERMINAL=kitty\n'
       [[ -n "$prefix" ]] && printf 'XDG_MENU_PREFIX=%s\n' "$prefix"
     } >"$HOME/.config/environment.d/91-dotfiles-defaults.conf"
-    printf 'com.mitchellh.ghostty.desktop\n' >"$HOME/.config/xdg-terminals.list"
+    printf 'kitty.desktop\n' >"$HOME/.config/xdg-terminals.list"
   fi
   # KDE apps need a menu file to know the installed apps (Open With, default apps)
   if [[ -n "$prefix" ]] && has kbuildsycoca6; then
@@ -103,13 +103,18 @@ setup_default_apps() {
   fi
   if has xdg-mime; then
     run xdg-mime default thunar.desktop inode/directory
-    run xdg-mime default com.mitchellh.ghostty.desktop x-scheme-handler/terminal
+    run xdg-mime default kitty.desktop x-scheme-handler/terminal
+    # archives open in File Roller (double-click in Thunar extracts or browses)
+    run xdg-mime default org.gnome.FileRoller.desktop application/zip application/x-7z-compressed \
+      application/vnd.rar application/x-rar application/x-tar application/gzip application/x-bzip2 \
+      application/x-xz application/zstd application/x-zstd-compressed-tar application/x-compressed-tar \
+      application/x-bzip-compressed-tar application/x-xz-compressed-tar application/x-lz4
   fi
   if has kwriteconfig6; then
-    run kwriteconfig6 --file kdeglobals --group General --key TerminalApplication ghostty
-    run kwriteconfig6 --file kdeglobals --group General --key TerminalService com.mitchellh.ghostty.desktop
+    run kwriteconfig6 --file kdeglobals --group General --key TerminalApplication kitty
+    run kwriteconfig6 --file kdeglobals --group General --key TerminalService kitty.desktop
   fi
-  log_info "defaults: Thunar for folders, ghostty for terminals"
+  log_info "defaults: Thunar for folders, kitty for terminals"
 }
 
 # On niri the compositor owns translucency (niri-transparency), so kitty and ghostty are made opaque
@@ -183,6 +188,8 @@ setup_niri() {
 
   run mkdir -p "$HOME/.config/noctalia/templates"
   link_config "$c/noctalia/templates/spicetify-text.ini" "$HOME/.config/noctalia/templates/spicetify-text.ini"
+  run mkdir -p "$HOME/.config/noctalia/palettes"
+  link_config "$c/noctalia/palettes/RosePine.json" "$HOME/.config/noctalia/palettes/RosePine.json"
   link_config "$c/noctalia/dotfiles.toml" "$HOME/.config/noctalia/dotfiles.toml"
   if has noctalia && ! noctalia config validate >/dev/null 2>&1; then
     log_warn "noctalia rejected configs/noctalia/dotfiles.toml, removing the copy"
@@ -205,3 +212,4 @@ case "$DOTS_WM" in
   niri) setup_niri ;;
   *) die "unknown desktop: $DOTS_WM" ;;
 esac
+is_dry || "$DOTS_ROOT/configs/scripts/font" apply || log_warn "could not apply the saved font"

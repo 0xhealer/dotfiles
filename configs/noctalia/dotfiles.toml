@@ -1,6 +1,5 @@
 [shell]
-font_family = "JetBrainsMono NF"
-app_icon_colorize = false
+font_family = "UbuntuMono Nerd Font"
 settings_window_translucent = true
 shared_gl_context = true
 time_format = "{:%H:%M}"
@@ -36,7 +35,7 @@ order = [ "default" ]
     compositor_blur = true
     concave_edge_corners = true
     reserve_space = true
-    font_family = "JetBrainsMono NF"
+    font_family = "UbuntuMono Nerd Font"
     start = [ "launcher", "wallpaper", "workspaces", "tray", "bar" ]
     center = [ "clock" ]
     end = [
@@ -54,7 +53,6 @@ order = [ "default" ]
 
 [dock]
 enabled = true
-monitors = [ "HDMI-A-1" ]
 position = "bottom"
 background_opacity = 0.34
 icon_size = 27
@@ -186,13 +184,12 @@ type = "media"
 # Colours come from the wallpaper and are rendered into every app below
 [theme]
 mode = "dark"
-source = "wallpaper"
-wallpaper_scheme = "m3-rainbow"
-pure_black_dark = true
+source = "custom"
+custom_palette = "RosePine"
 
     [theme.templates]
     enable_builtin_templates = true
-    builtin_ids = [ "btop", "cava", "gtk3", "gtk4", "ghostty", "kcolorscheme", "kitty", "niri", "qt", "starship" ]
+    builtin_ids = [ "btop", "cava", "gtk3", "gtk4", "kcolorscheme", "kitty", "niri", "qt", "starship" ]
     enable_community_templates = true
     community_ids = [
         "brave",

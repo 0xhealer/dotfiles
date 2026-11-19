@@ -1,4 +1,4 @@
-catppuccin.catppuccin-vsc
+mvllow.rose-pine
 PKief.material-icon-theme
 llvm-vs-code-extensions.vscode-clangd
 ms-vscode.cmake-tools

@@ -47,6 +47,12 @@ require("mason-tool-installer").setup({
 
 		"goimports",
 		"gofumpt",
+
+		-- debug adapters (plugins/dap.lua)
+		"codelldb",
+		"debugpy",
+		"delve",
+		"js-debug-adapter",
 	},
 	auto_update = false,
 	run_on_start = true,

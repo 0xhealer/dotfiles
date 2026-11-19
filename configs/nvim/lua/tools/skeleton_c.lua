@@ -31,7 +31,7 @@ local function dedupe(list)
 end
 
 local function project_root(path)
-	return vim.fs.root(path or vim.api.nvim_buf_get_name(0), ROOT_MARKERS) or vim.loop.cwd()
+	return vim.fs.root(path or vim.api.nvim_buf_get_name(0), ROOT_MARKERS) or vim.uv.cwd()
 end
 
 local function filename_stem()

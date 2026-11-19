@@ -9,10 +9,6 @@
       "rev": "655133c3b4c3e5e05ec549b9f8cc2894ac6f51b3",
       "src": "https://github.com/akinsho/bufferline.nvim"
     },
-    "catppuccin": {
-      "rev": "edefef779ab08ce1a4a404713e3012b0d202bd35",
-      "src": "https://github.com/catppuccin/nvim"
-    },
     "codediff.nvim": {
       "rev": "0abad4aa022a34fab0deb90dd9379d5de1c9c329",
       "src": "https://github.com/esmuellert/codediff.nvim"
@@ -29,21 +25,9 @@
       "rev": "5be654f2232c10ddcad19c1607a67b6b4b78fc29",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
-    "gruvbox.nvim": {
-      "rev": "154eb5ff5b96d0641307113fa385eaf0d36d9796",
-      "src": "https://github.com/ellisonleao/gruvbox.nvim"
-    },
-    "horizon.nvim": {
-      "rev": "b4d7b1e7c3aa77aea31b9ced8960e49fd8682c47",
-      "src": "https://github.com/akinsho/horizon.nvim"
-    },
     "incline.nvim": {
       "rev": "debd628e9395f7a9da57bdc31ce75ca6b40a880b",
       "src": "https://github.com/b0o/incline.nvim"
-    },
-    "kanagawa.nvim": {
-      "rev": "bb85e4bfc8d89b0e62c8fa53ccdd13d12e2f77b3",
-      "src": "https://github.com/rebelot/kanagawa.nvim"
     },
     "lualine.nvim": {
       "rev": "221ce6b2d999187044529f49da6554a92f740a96",
@@ -111,10 +95,6 @@
       "rev": "882c996cf28183f4d63640de0b4c02ec886d01f2",
       "src": "https://github.com/folke/snacks.nvim"
     },
-    "solarized-osaka.nvim": {
-      "rev": "a21176efde15fab21fabda0bf2ba123ed6d7332d",
-      "src": "https://github.com/craftzdog/solarized-osaka.nvim"
-    },
     "tiny-cmdline.nvim": {
       "rev": "e247d9ee4c980734f8f8bf616d31e0ab7c27485d",
       "src": "https://github.com/rachartier/tiny-cmdline.nvim"
@@ -122,10 +102,6 @@
     "todo-comments.nvim": {
       "rev": "31e3c38ce9b29781e4422fc0322eb0a21f4e8668",
       "src": "https://github.com/folke/todo-comments.nvim"
-    },
-    "tokyonight.nvim": {
-      "rev": "cdc07ac78467a233fd62c493de29a17e0cf2b2b6",
-      "src": "https://github.com/folke/tokyonight.nvim"
     },
     "which-key.nvim": {
       "rev": "3aab2147e74890957785941f0c1ad87d0a44c15a",

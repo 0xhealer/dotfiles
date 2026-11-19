@@ -38,7 +38,6 @@ starship
 fastfetch
 neovim
 kitty
-ghostty
 niri
 xwayland-satellite
 wl-clipboard
@@ -104,3 +103,15 @@ lld
 llvm
 libsecret
 seahorse
+
+# terminal multiplexer
+tmux
+
+# archives
+file-roller
+7zip
+unrar
+zstd
+bzip2
+lz4
+libarchive

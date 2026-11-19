@@ -59,6 +59,8 @@ done
 
 link_config "$c/sway/config" "$HOME/.config/sway/config"
 [[ -f "$HOME/.config/sway/noctalia" ]] || { is_dry || : >"$HOME/.config/sway/noctalia"; }
+run mkdir -p "$HOME/.config/noctalia/palettes"
+link_config "$c/noctalia/palettes/RosePine.json" "$HOME/.config/noctalia/palettes/RosePine.json"
 link_config "$c/noctalia/dotfiles-sway.toml" "$HOME/.config/noctalia/dotfiles.toml"
 if [[ -x "$prefix/bin/noctalia" ]] && ! "$prefix/bin/noctalia" config validate >/dev/null 2>&1; then
   log_warn "noctalia rejected configs/noctalia/dotfiles-sway.toml, removing the copy"
@@ -67,7 +69,7 @@ fi
 
 [[ -f /usr/share/wayland-sessions/sway.desktop ]] || log_warn "no sway session file found, is sway installed?"
 if ((noctalia_ok)); then
-  log_ok "pick the Sway session on the login screen; i3 is untouched. Colours follow the wallpaper through matugen"
+  log_ok "pick the Sway session on the login screen; i3 is untouched. Colours are Rose Pine"
 else
   log_warn "sway is installed but Noctalia is not; fix the warning above and re-run: ./install.sh sway"
 fi

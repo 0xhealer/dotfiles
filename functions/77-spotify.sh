@@ -100,7 +100,7 @@ if [[ "$DOTS_WM" == niri && -d "$spicetify_dir/Themes/text" ]]; then
   grep -q '^\[Noctalia\]' "$theme/color.ini" 2>/dev/null || cp "$DOTS_ROOT/configs/spicetify/color.ini" "$theme/color.ini"
   spicetify config current_theme text color_scheme Noctalia inject_css 1 replace_colors 1 overwrite_assets 1 inject_theme_js 1 >/dev/null 2>&1 || true
 else
-  spicetify config current_theme Sleek color_scheme Catppuccin inject_css 1 replace_colors 1 overwrite_assets 1 >/dev/null 2>&1 || true
+  spicetify config current_theme Sleek color_scheme RosePine inject_css 1 replace_colors 1 overwrite_assets 1 >/dev/null 2>&1 || true
 fi
 
 if [[ -f "$prefs_path" ]]; then

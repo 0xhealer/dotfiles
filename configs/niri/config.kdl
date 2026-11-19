@@ -81,7 +81,7 @@ window-rule {
 binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
 
-    Mod+Return       { spawn "ghostty"; }
+    Mod+Return       { spawn "kitty"; }
     Mod+Shift+Return { spawn "kitty"; }
     Mod+B { spawn "sh" "-c" "for b in brave-browser brave brave-bin firefox firefox-esr; do command -v \"$b\" >/dev/null && exec \"$b\"; done; exec xdg-open about:blank"; }
     Mod+E { spawn "thunar"; }

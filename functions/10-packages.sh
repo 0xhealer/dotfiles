@@ -15,7 +15,6 @@ setup_fedora_repos() {
   # a COPR without a build for this Fedora release 404s and breaks every later dnf call,
   # so each one is probed and dropped when it has nothing for us
   enable_copr scottames/vicinae || skip_pkg vicinae
-  enable_copr scottames/ghostty || enable_copr pgdev/ghostty || skip_pkg ghostty
 }
 
 skip_pkg() {

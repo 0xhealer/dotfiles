@@ -5,7 +5,6 @@ Same keys on every Linux install. `Super` is the modifier. i3 (Ubuntu, Kali) and
 | Keys | i3 | niri |
 | --- | --- | --- |
 | `Super+Return` | kitty | kitty |
-| `Super+Shift+Return` | ghostty | ghostty |
 | `Super+B` | Brave (Firefox fallback) | Brave (Firefox fallback) |
 | `Super+E` | Thunar | Thunar |
 | `Super+Space`, `Super+D` | rofi launcher | Vicinae |
@@ -94,3 +93,40 @@ Other custom keys:
 | `Space p/P`, `d`, `c` | paste / delete / change without yanking |
 
 Added plugins: `gs` flash jump, `gS` flash treesitter select, `Space R` search and replace (grug-far), `Space xx/xb/xl/xq` Trouble lists.
+
+### Debugger and tests
+
+| Keys | Action |
+| --- | --- |
+| `F5` / `Shift+F5` | start or continue / terminate |
+| `F9` | toggle breakpoint |
+| `F10` / `F11` / `Shift+F11` | step over / into / out |
+| `Space Db` / `DB` / `Dl` / `DX` | breakpoint / conditional / log point / clear all |
+| `Space Dc` / `DC` / `DL` / `DR` / `Dt` | continue / run to cursor / run last / restart / terminate |
+| `Space Di` / `Do` / `DO` / `Dp` | step into / over / out / pause |
+| `Space Dj` / `Dk` | stack frame down / up |
+| `Space Du` / `Dr` / `De` | debug UI / REPL / evaluate |
+| `Space Tt` / `Tf` / `Ta` / `Tl` | run nearest / file / all / last test |
+| `Space Td` / `Tx` | debug nearest test / stop |
+| `Space Ts` / `To` / `TO` | test summary / output / output panel |
+
+Adapters (codelldb, debugpy, delve, js-debug) install through Mason.
+
+## tmux
+
+Prefix is `Ctrl+A` (`tmux` is aliased to `tmux -u`).
+
+| Keys | Action |
+| --- | --- |
+| `Prefix \|` / `Prefix -` | split right / down in the current directory |
+| `Prefix h/j/k/l` | move between panes (`H/J/K/L` resize) |
+| `Prefix f` | tmux-sessionizer: fuzzy-pick a project, open or switch to its session |
+| `Prefix r` | reload config |
+
+## Shell helpers
+
+| Command | Does |
+| --- | --- |
+| `x <archive>` / `extract` | unpack zip, 7z, rar, tar.*, zst and more |
+| `compress <name>.<ext> <files>` | create an archive by extension |
+| `font ubuntu-mono \| jetbrains-mono \| hack` | switch the monospace font in kitty, VS Code, Noctalia and GTK |

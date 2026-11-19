@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Make an archive; the format comes from the name. Usage: compress out.tar.zst|tar.gz|tar.xz|tar.bz2|zip|7z file...
+set -euo pipefail
+[[ $# -ge 2 ]] || { echo "usage: compress out.(tar.zst|tar.gz|tar.xz|tar.bz2|tgz|zip|7z) file..." >&2; exit 2; }
+out="$1"; shift
+case "${out,,}" in
+  *.tar.zst) tar --zstd -cf "$out" "$@" ;;
+  *.tar.gz | *.tgz) tar -czf "$out" "$@" ;;
+  *.tar.xz) tar -cJf "$out" "$@" ;;
+  *.tar.bz2) tar -cjf "$out" "$@" ;;
+  *.tar) tar -cf "$out" "$@" ;;
+  *.zip) zip -qr "$out" "$@" ;;
+  *.7z) for b in 7z 7zz 7za; do command -v $b >/dev/null && break; done; $b a -bso0 "$out" "$@" ;;
+  *) echo "compress: unknown format for $out" >&2; exit 2 ;;
+esac
+echo "$out"

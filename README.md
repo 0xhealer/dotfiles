@@ -50,8 +50,12 @@ functions/                 numbered Linux steps
 modules/                   numbered Windows steps
 packages/                  package lists per distro
 configs/                   one folder per application
-assets/                    wallpapers
+assets/                    fonts, wallpapers
 ```
+
+## Look
+
+One theme everywhere: Rose Pine (Moon) in kitty, Neovim, VS Code, tmux, starship, Windows Terminal, GTK/Qt, rofi, polybar and Noctalia. Fonts are UbuntuMono Nerd Font (default), JetBrainsMono Nerd Font and Hack Nerd Font; `font hack` switches.
 
 ## Extras
 

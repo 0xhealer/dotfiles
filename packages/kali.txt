@@ -105,3 +105,14 @@ gnome-keyring
 libsecret-1-0
 libsecret-tools
 seahorse
+
+# terminal multiplexer
+tmux
+
+# archives
+file-roller
+p7zip-full
+zstd
+bzip2
+lz4
+libarchive-tools

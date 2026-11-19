@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Pick a project directory with fzf and jump to (or create) a tmux session for it, after ThePrimeagen's
+# tmux-sessionizer. Usage: tmux-sessionizer [dir]. Search roots: TS_SEARCH_PATHS, default below.
+set -euo pipefail
+
+if [[ $# -ge 1 ]]; then
+  selected="$1"
+else
+  roots=("${TS_SEARCH_PATHS[@]:-}")
+  [[ -n "${roots[0]:-}" ]] || roots=("$HOME/personal" "$HOME/projects" "$HOME/dev" "$HOME/work" "$HOME/.config")
+  existing=()
+  for r in "${roots[@]}"; do [[ -d "$r" ]] && existing+=("$r"); done
+  selected="$( { find "${existing[@]}" -mindepth 1 -maxdepth 1 -type d 2>/dev/null; echo "$HOME"; } | fzf --prompt='project > ')"
+fi
+[[ -n "${selected:-}" ]] || exit 0
+
+name="$(basename "$selected" | tr . _)"
+
+if ! tmux has-session -t="$name" 2>/dev/null; then
+  tmux new-session -ds "$name" -c "$selected"
+fi
+
+if [[ -z "${TMUX:-}" ]]; then
+  exec tmux -u attach-session -t "$name"
+fi
+tmux switch-client -t "$name"

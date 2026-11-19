@@ -1,5 +1,4 @@
-font-family = JetBrainsMono Nerd Font
-font-family = Hack Nerd Font
+config-file = ?~/.config/theme/ghostty-font
 font-size = 12
 
 config-file = ?~/.config/matugen/generated/ghostty-colors

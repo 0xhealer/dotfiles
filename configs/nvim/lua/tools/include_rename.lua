@@ -23,7 +23,7 @@ local function join_path(parts, from_idx, to_idx)
 end
 
 local function find_project_root(path)
-	return vim.fs.root(path, { ".git", "compile_commands.json", "compile_flags.txt" }) or vim.loop.cwd()
+	return vim.fs.root(path, { ".git", "compile_commands.json", "compile_flags.txt" }) or vim.uv.cwd()
 end
 
 local function file_count_by_name(root, filename)

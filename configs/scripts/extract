@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# Extract any archive into a folder named after it (no tarbombs): one top-level entry is moved up as it is,
+# several entries land in <archive name>/. Usage: extract [-d dir] archive...   (also: x)
+set -uo pipefail
+
+dest=.
+if [[ "${1:-}" == -d ]]; then dest="${2:?extract: -d needs a directory}"; shift 2; fi
+[[ $# -gt 0 ]] || { echo "usage: extract [-d dir] archive..." >&2; exit 2; }
+mkdir -p "$dest"
+
+for b in 7z 7zz 7za 7zr; do command -v "$b" >/dev/null && { SZ="$b"; break; }; done
+SZ="${SZ:-7z}"
+7z() { command "$SZ" "$@"; }
+
+need() { command -v "$1" >/dev/null || { echo "extract: $1 is not installed" >&2; return 1; }; }
+
+unpack() { # unpack <archive> <into>
+  local f="$1" out="$2"
+  case "${f,,}" in
+    *.tar | *.tar.gz | *.tgz | *.tar.bz2 | *.tbz2 | *.tar.xz | *.txz | *.tar.zst | *.tzst | *.tar.lz4 | *.tar.lz | *.tar.z | *.tar.lzma)
+      tar -xf "$f" -C "$out" ;;
+    *.zip | *.jar | *.war | *.apk | *.whl | *.xpi | *.crx | *.epub | *.docx | *.xlsx | *.pptx | *.odt)
+      if command -v unzip >/dev/null; then unzip -q "$f" -d "$out"; else need "$SZ" && 7z x -y -o"$out" "$f" >/dev/null; fi ;;
+    *.rar | *.cbr)
+      if command -v unrar >/dev/null; then (cd "$out" && unrar x -idq "$(realpath "$f")"); else need "$SZ" && 7z x -y -o"$out" "$f" >/dev/null; fi ;;
+    *.7z | *.iso | *.cab | *.arj | *.lzh | *.chm | *.wim | *.dmg | *.vhd | *.vmdk | *.squashfs | *.xar | *.cpio)
+      need "$SZ" && 7z x -y -o"$out" "$f" >/dev/null ;;
+    *.deb)
+      if command -v dpkg-deb >/dev/null; then dpkg-deb -x "$f" "$out"; else need "$SZ" && 7z x -y -o"$out" "$f" >/dev/null; fi ;;
+    *.rpm)
+      need rpm2cpio && need cpio && (rpm2cpio "$f" | (cd "$out" && cpio -idm --quiet)) ;;
+    *.gz) need gzip && gzip -dc "$f" >"$out/$(basename "${f%.*}")" ;;
+    *.bz2) need bzip2 && bzip2 -dc "$f" >"$out/$(basename "${f%.*}")" ;;
+    *.xz) need xz && xz -dc "$f" >"$out/$(basename "${f%.*}")" ;;
+    *.zst) need zstd && zstd -dc "$f" >"$out/$(basename "${f%.*}")" ;;
+    *.lz4) need lz4 && lz4 -dc "$f" >"$out/$(basename "${f%.*}")" ;;
+    *.z) need uncompress && uncompress -c "$f" >"$out/$(basename "${f%.*}")" ;;
+    *) # unknown extension: let 7z or bsdtar sniff the format
+      if command -v "$SZ" >/dev/null && 7z x -y -o"$out" "$f" >/dev/null 2>&1; then :
+      elif command -v bsdtar >/dev/null && bsdtar -xf "$f" -C "$out" 2>/dev/null; then :
+      else echo "extract: don't know how to unpack $f" >&2; return 1; fi ;;
+  esac
+}
+
+rc=0
+for f in "$@"; do
+  [[ -f "$f" ]] || { echo "extract: $f is not a file" >&2; rc=1; continue; }
+  name="$(basename "$f")"
+  base="${name%.*}"
+  case "${name,,}" in *.tar.*) base="${name%.tar.*}" ;; esac
+  tmp="$(mktemp -d "$dest/.extract.XXXXXX")"
+  if ! unpack "$f" "$tmp"; then rm -rf "$tmp"; rc=1; continue; fi
+  shopt -s dotglob nullglob
+  items=("$tmp"/*)
+  shopt -u dotglob nullglob
+  if [[ ${#items[@]} -eq 0 ]]; then
+    echo "extract: $f is empty" >&2; rm -rf "$tmp"; continue
+  fi
+  if [[ ${#items[@]} -eq 1 ]]; then target="$dest/$(basename "${items[0]}")"; src="${items[0]}"; else target="$dest/$base"; src="$tmp"; fi
+  if [[ -e "$target" ]]; then
+    i=1; while [[ -e "$target.$i" ]]; do i=$((i + 1)); done
+    target="$target.$i"
+  fi
+  mv "$src" "$target"
+  rm -rf "$tmp"
+  echo "$f -> $target"
+done
+exit $rc

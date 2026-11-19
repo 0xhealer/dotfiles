@@ -84,6 +84,20 @@ function Install-PowerShell7Msi {
     if ($proc.ExitCode -ne 0 -and $proc.ExitCode -ne 3010) { throw "msiexec exited with $($proc.ExitCode)" }
 }
 
+# Path of the real winget.exe. The WindowsApps alias (what Get-Command returns) can fail with
+# "The file cannot be accessed by the system", so prefer the executable inside the App Installer package.
+function Get-WingetExe {
+    try {
+        $pkg = Get-AppxPackage -Name Microsoft.DesktopAppInstaller -AllUsers -ErrorAction Stop |
+            Sort-Object Version -Descending | Select-Object -First 1
+        if ($pkg) {
+            $exe = Join-Path $pkg.InstallLocation 'winget.exe'
+            if (Test-Path -LiteralPath $exe) { return $exe }
+        }
+    } catch { }
+    return (Get-Command winget -ErrorAction Stop).Source
+}
+
 function Install-WingetPackage {
     param([Parameter(Mandatory)][string]$Id)
     if ($script:DryRun) { Write-Host "    [dry-run] winget install --id $Id"; return $true }

@@ -72,14 +72,14 @@ alias dl 'cd ~/Downloads'
 alias doc 'cd ~/Documents'
 alias vid 'cd ~/Videos'
 
-alias x exit
+alias x 'extract'
 alias h history
 alias j 'jobs -l'
 alias which 'type -a'
 alias now 'date +"%Y-%m-%d %T"'
 alias week 'date +%V'
-alias egrep 'egrep --color=auto'
-alias fgrep 'fgrep --color=auto'
+alias egrep 'grep -E --color=auto'
+alias fgrep 'grep -F --color=auto'
 alias biggest 'du -h --max-depth=1 | sort -h'
 alias k9 'kill -9'
 alias killall 'killall -v'
@@ -110,3 +110,4 @@ end
 function stop-homelab
     cd ~/containers/homelab; and docker compose down $argv
 end
+alias tmux 'tmux -u'

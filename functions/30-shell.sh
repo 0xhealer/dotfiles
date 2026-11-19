@@ -5,7 +5,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/../helper/helper.sh"
 require_user
 detect_platform
 
-log_step "Shell (zsh, fish)"
+log_step "Shell (zsh, fish, tmux)"
 
 link_config "$DOTS_ROOT/configs/zsh/zshrc" "$HOME/.zshrc"
 link_config "$DOTS_ROOT/configs/fish/config.fish" "$HOME/.config/fish/config.fish"
@@ -21,6 +21,13 @@ while IFS= read -r -d '' fn; do
   link_config "$fn" "$HOME/.config/zsh/$rel"
 done < <(find "$DOTS_ROOT/configs/zsh" -name '*.zsh' -print0)
 link_config "$DOTS_ROOT/configs/shell/gh.sh" "$HOME/.config/shell/gh.sh"
+link_config "$DOTS_ROOT/configs/tmux/tmux.conf" "$HOME/.config/tmux/tmux.conf"
+run mkdir -p "$HOME/.local/bin"
+# helper scripts used from the shell (font, extract, compress, tmux-sessionizer)
+for f in font extract compress tmux-sessionizer; do
+  ensure_executable "$DOTS_ROOT/configs/scripts/$f"
+  link_config "$DOTS_ROOT/configs/scripts/$f" "$HOME/.local/bin/$f"
+done
 
 if ! has zoxide; then
   log_info "installing zoxide from upstream"

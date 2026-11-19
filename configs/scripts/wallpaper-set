@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
-log="$HOME/.cache/dotfiles-wallpaper.log"
 dir="$HOME/Pictures/Wallpapers"
 state="$HOME/.cache/dotfiles-wallpaper"
-mkdir -p "$(dirname "$state")" "$HOME/.config/matugen/generated"
+mkdir -p "$(dirname "$state")"
 
 pick_random() {
   local current
@@ -41,15 +40,6 @@ case "${XDG_CURRENT_DESKTOP:-}" in
 esac
 ((restore)) && exit 0
 
-if command -v matugen >/dev/null 2>&1; then
-  if ! matugen image "$wall" -m dark --source-color-index 0 >"$log" 2>&1 &&
-    ! matugen image "$wall" -m dark >>"$log" 2>&1; then
-    notify-send -u critical "matugen failed" "see $log" 2>/dev/null
-  fi
-else
-  notify-send -u critical "matugen not found" "run install.sh matugen" 2>/dev/null
-fi
-
 pkill -USR1 -x kitty 2>/dev/null
 pkill -USR2 -x ghostty 2>/dev/null
 if pgrep -x dunst >/dev/null; then
@@ -69,7 +59,6 @@ fi
 case "${XDG_CURRENT_DESKTOP:-}" in
   *KDE*)
     plasma-apply-colorscheme BreezeDark >/dev/null 2>&1
-    plasma-apply-colorscheme Matugen >/dev/null 2>&1
     ;;
 esac
 i3-msg reload >/dev/null 2>&1

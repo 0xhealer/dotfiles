@@ -26,6 +26,7 @@ require("plugins.gitlinker")
 require("plugins.codediff")
 
 require("plugins.lsp")
+require("plugins.dap")
 
 require("plugins.oil")
 require("plugins.obsidian")

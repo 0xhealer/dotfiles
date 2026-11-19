@@ -12,11 +12,10 @@ format = "{:%H:%M %a, %b %d}"
 
 [theme]
 mode = "dark"
-source = "wallpaper"
-wallpaper_scheme = "m3-tonal-spot"
+source = "custom"
+custom_palette = "RosePine"
 
-# Only sway is themed by Noctalia here; every other app keeps following matugen, which the hook below feeds
-# with the current wallpaper so i3 and sway share one colour pipeline.
+# Only sway is themed by Noctalia here; every other app uses the static Rose Pine files from install step 82.
 [theme.templates]
 enable_builtin_templates = true
 builtin_ids = ["sway"]

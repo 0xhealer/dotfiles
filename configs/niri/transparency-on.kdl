@@ -1,4 +1,4 @@
-// every window, terminals included, is slightly translucent (kitty and ghostty are opaque internally on niri)
+// every window, terminals included, is slightly translucent (kitty is opaque internally on niri)
 window-rule {
     opacity 0.85
 }
