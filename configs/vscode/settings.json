@@ -8,7 +8,7 @@
   "update.mode": "manual",
   "telemetry.telemetryLevel": "off",
 
-  "editor.fontFamily": "'Ubuntu Nerd Font', 'JetBrainsMono Nerd Font', 'Hack Nerd Font', monospace",
+  "editor.fontFamily": "'Hack Nerd Font', 'JetBrainsMono Nerd Font', 'Ubuntu Nerd Font', monospace",
   "editor.fontSize": 14,
   "editor.fontLigatures": true,
   "editor.lineHeight": 1.6,
@@ -33,7 +33,7 @@
   "explorer.confirmDelete": false,
   "explorer.confirmDragAndDrop": false,
 
-  "terminal.integrated.fontFamily": "'Ubuntu Nerd Font', 'JetBrainsMono Nerd Font', 'Hack Nerd Font'",
+  "terminal.integrated.fontFamily": "'Hack Nerd Font', 'JetBrainsMono Nerd Font', 'Ubuntu Nerd Font'",
   "terminal.integrated.fontSize": 13,
   "terminal.integrated.cursorStyle": "line",
   "terminal.integrated.defaultProfile.linux": "zsh",

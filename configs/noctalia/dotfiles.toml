@@ -1,5 +1,5 @@
 [shell]
-font_family = "Ubuntu Nerd Font"
+font_family = "Hack Nerd Font"
 settings_window_translucent = true
 shared_gl_context = true
 time_format = "{:%H:%M}"
@@ -35,7 +35,7 @@ order = [ "default" ]
     compositor_blur = true
     concave_edge_corners = true
     reserve_space = true
-    font_family = "Ubuntu Nerd Font"
+    font_family = "Hack Nerd Font"
     start = [ "launcher", "wallpaper", "workspaces", "tray", "bar" ]
     center = [ "clock" ]
     end = [

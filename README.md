@@ -55,7 +55,7 @@ assets/                    fonts, wallpapers
 
 ## Look
 
-One theme everywhere: Rose Pine (Moon) in kitty, Neovim, VS Code, tmux, starship, Windows Terminal, GTK/Qt, rofi, polybar and Noctalia. Fonts are Ubuntu Nerd Font (default), JetBrainsMono Nerd Font and Hack Nerd Font; `font hack` switches.
+One theme everywhere: Rose Pine (Moon) in kitty, Neovim, VS Code, tmux, starship, Windows Terminal, GTK/Qt, rofi, polybar and Noctalia. Fonts are Hack Nerd Font (default), JetBrainsMono Nerd Font and Ubuntu Nerd Font; `font ubuntu` switches.
 
 ## Extras
 

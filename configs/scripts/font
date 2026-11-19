@@ -4,7 +4,7 @@
 # `apply` re-applies the saved choice (the installer calls it after copying the configs).
 set -Eeuo pipefail
 cfg="$HOME/.config/theme"
-default=ubuntu
+default=hack
 
 family() { # key -> font family as fontconfig knows it
   case "$1" in
