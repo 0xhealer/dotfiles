@@ -22,9 +22,6 @@ tree-sitter.tree-sitter-cli
 ast-grep.ast-grep
 Microsoft.Teams
 FastStone.Viewer
-ArduinoSA.IDE.stable
-ArduinoSA.CLI
-KiCad.KiCad
 PuTTY.PuTTY
 
 # virtualization and networking
