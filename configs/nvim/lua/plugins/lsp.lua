@@ -53,6 +53,7 @@ require("mason-tool-installer").setup({
 		"debugpy",
 		"delve",
 		"js-debug-adapter",
+		"gotestsum", -- Go test runner for neotest (stable on Windows)
 	},
 	auto_update = false,
 	run_on_start = true,

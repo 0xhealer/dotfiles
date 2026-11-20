@@ -88,6 +88,24 @@ vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 vim.g.loaded_node_provider = 0
 
+-- Windows: terminals, :! and :make run through PowerShell 7 (pwsh), falling back to Windows PowerShell 5.1.
+-- A Neovim started before pwsh was installed has a stale PATH, so add its folder. See :help shell-powershell
+if vim.fn.has("win32") == 1 then
+	local pwsh_dir = (vim.env.ProgramFiles or "") .. "\\PowerShell\\7"
+	if vim.fn.isdirectory(pwsh_dir) == 1 and not (vim.env.PATH or ""):lower():find(pwsh_dir:lower(), 1, true) then
+		vim.env.PATH = vim.env.PATH .. ";" .. pwsh_dir
+	end
+	local sh = vim.fn.executable("pwsh") == 1 and "pwsh" or (vim.fn.executable("powershell") == 1 and "powershell" or nil)
+	if sh then
+		vim.o.shell = sh
+		vim.o.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
+		vim.o.shellredir = '2>&1 | %%{ "$_" } | Out-File %s; exit $LastExitCode'
+		vim.o.shellpipe = '2>&1 | %%{ "$_" } | Tee-Object %s; exit $LastExitCode'
+		vim.o.shellquote = ""
+		vim.o.shellxquote = ""
+	end
+end
+
 vim.g.netrw_keepdir = 0
 
 vim.g.netrw_localcopydircmd = vim.fn.has("win32") == 1 and "cmd /c robocopy /e" or "cp -r"

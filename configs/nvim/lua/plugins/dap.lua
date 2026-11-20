@@ -138,7 +138,20 @@ local adapters = {}
 for _, mod in ipairs({ "neotest-python", "neotest-golang", "neotest-rust" }) do
 	local ok, a = pcall(require, mod)
 	if ok then
-		table.insert(adapters, mod == "neotest-python" and a({ dap = { justMyCode = false } }) or a)
+		if mod == "neotest-python" then
+			a = a({ dap = { justMyCode = false } })
+		elseif mod == "neotest-golang" then
+			-- debug with the delve adapter above (no nvim-dap-go needed); gotestsum once Mason has installed it
+			local ok_cfg, configured = pcall(a, {
+				runner = vim.fn.executable("gotestsum") == 1 and "gotestsum" or "go",
+				dap_mode = "manual",
+				dap_manual_config = { type = "delve", name = "Debug test", request = "launch", mode = "test" },
+			})
+			if ok_cfg then
+				a = configured
+			end
+		end
+		table.insert(adapters, a)
 	end
 end
 local nt = require("neotest")

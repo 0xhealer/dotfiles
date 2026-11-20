@@ -19,6 +19,7 @@ GoLang.Go
 Rustlang.Rustup
 7zip.7zip
 tree-sitter.tree-sitter-cli
+ast-grep.ast-grep
 Microsoft.Teams
 FastStone.Viewer
 ArduinoSA.IDE.stable

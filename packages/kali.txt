@@ -116,3 +116,6 @@ zstd
 bzip2
 lz4
 libarchive-tools
+
+# structural search/replace for grug-far; skipped where the repos lack it
+ast-grep

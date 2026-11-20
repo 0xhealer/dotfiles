@@ -106,3 +106,6 @@ zstd
 bzip2
 lz4
 bsdtar
+
+# structural search/replace for grug-far; skipped where the repos lack it
+ast-grep
